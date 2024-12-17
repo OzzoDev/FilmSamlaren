@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/spinner.css" />
     <link rel="stylesheet" href="../css/index.css" />
+    <script type="module" src="../js/script.js" defer></script>
     <script type="module" src="../js/index.js" defer></script>
   </head>
   <body>
@@ -18,7 +19,7 @@
         <img src="../res/images/logo.png" alt="Film Flicker" class="logo" />
       </a>
       <nav>
-        <ul>
+        <ul id="navUl" class="navUl">
           <li>
             <a href="../html/watchlist.html" title="Watchlist">
               <img src="../res/icons/watchlist.svg" alt="watchlist" class="icon icon-scale" />
@@ -33,6 +34,11 @@
           </li>
         </ul>
       </nav>
+      <div id="menuToggle" class="icon nav-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </header>
     <main>
       <!-- main content -->

@@ -1,0 +1,1 @@
+/*Common render function for all pages*/

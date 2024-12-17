@@ -1,0 +1,1 @@
+/*Common javascript for all pages*/

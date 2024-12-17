@@ -1,0 +1,1 @@
+/*Common utilities functions for all pages*/

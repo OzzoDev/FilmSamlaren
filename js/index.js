@@ -1,7 +1,10 @@
 /*Javascript for index/start page only*/
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
+import { MovieCard } from "./classes/MoiveCard.js";
 
-const apiClientTopMovies = new ApiClientImdb(document.body, "topMovies");
+const movieCardContainer = document.getElementById("movieCardContainer");
+
+let movies = [];
 
 window.addEventListener("DOMContentLoaded", () => {
   init();
@@ -12,9 +15,18 @@ function init() {
 }
 
 async function getData() {
-  const topMovies = await apiClientTopMovies.fetchData();
+  const apiClientTopMovies = new ApiClientImdb(movieCardContainer, "topMovies");
 
-  document.body.innerHTML = "";
+  movies = await apiClientTopMovies.cachedData();
 
-  console.log(topMovies);
+  renderMovieCards();
+
+  console.log(movies);
+}
+
+function renderMovieCards(condtion) {
+  movies.forEach((movie) => {
+    const movieCard = new MovieCard(movie).card();
+    movieCardContainer.appendChild(movieCard);
+  });
 }

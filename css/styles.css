@@ -31,6 +31,10 @@
   --color-success: #2d8a2d;
 }
 
+::-webkit-scrollbar {
+  width: 0;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -84,11 +88,6 @@ header {
       display: flex;
     }
   }
-
-  /* nav img {
-      width: 40px;
-      height: 40px;
-    } */
 
   .nav-icon {
     width: 35px;
@@ -147,7 +146,7 @@ body {
   gap: 50px;
   color: var(--color-primary-text);
   background-color: var(--color-surface-a0);
-  overflow: hidden;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -259,7 +258,7 @@ input {
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    transform: scale(1.04);
+    transform: scale(1.01);
   }
 
   .poster {

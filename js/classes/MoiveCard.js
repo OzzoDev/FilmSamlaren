@@ -1,18 +1,29 @@
 export class MovieCard {
   constructor(movie) {
-    this.moive = movie;
+    this.movie = movie;
   }
 
   card() {
-    const movie = this.moive;
-    const moviePoster = movie.primaryImage;
+    const movie = this.movie;
+    const title = movie.title;
+    const posterSrc = movie.primaryImage;
 
-    const container = document.createElement("div");
+    const movieCard = document.createElement("div");
+    const poster = document.createElement("img");
 
-    container.setAttribute("class", "moiveCard");
+    poster.setAttribute("src", "../../res/images/moviePosterPlaceholder.jpg");
+    poster.setAttribute("class", "poster");
+    poster.setAttribute("alt", title);
 
-    container.style.backgroundImage = `url(${moviePoster})`;
+    const actualPoster = new Image();
+    actualPoster.src = posterSrc;
+    actualPoster.onload = () => {
+      poster.setAttribute("src", posterSrc);
+    };
 
-    return container;
+    movieCard.setAttribute("class", "movieCard");
+    movieCard.appendChild(poster);
+
+    return movieCard;
   }
 }

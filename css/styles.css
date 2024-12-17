@@ -115,10 +115,12 @@ input {
 
 /*Movie card*/
 
-.moiveCard {
-  width: 300px;
-  height: 400px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+.movieCard {
+  width: min(100%, 400px);
+  height: 540px;
+
+  .poster {
+    width: 100%;
+    height: 100%;
+  }
 }

@@ -1,4 +1,15 @@
 /*Common render function for all pages*/
+
+export function renderSpinner(parent) {
+  const spinner = document.createElement("div");
+  spinner.setAttribute("class", "loader");
+
+  if (parent) {
+    parent.innerHTML = "";
+    parent.appendChild(spinner);
+  }
+}
+
 export function renderErrorMessage(parent, message) {
   const errorContainer = document.createElement("div");
   const errorHeader = document.createElement("h2");

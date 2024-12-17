@@ -1,4 +1,5 @@
 /*Common render function for all pages*/
+import { formatLargeNumber } from "./utility.js";
 
 export function renderSpinner(parent) {
   const spinner = document.createElement("div");
@@ -48,4 +49,31 @@ export function renderErrorMessage(parent, message) {
   }
 
   console.error(message);
+}
+
+export function iconValue(value, src, altAndTitle, dir) {
+  const fullSrc = `../../res/icons/${src}.svg`;
+
+  const iconContainer = document.createElement("div");
+  const icon = document.createElement("img");
+  const iconText = document.createElement("p");
+
+  iconContainer.setAttribute("class", "iconContainer");
+  iconContainer.setAttribute("title", formatLargeNumber(altAndTitle));
+
+  icon.setAttribute("src", fullSrc);
+  icon.setAttribute("alt", formatLargeNumber(altAndTitle));
+  icon.setAttribute("class", "icon");
+
+  iconText.innerText = formatLargeNumber(value);
+
+  if (!dir || dir.toLowerCase() === "left") {
+    iconContainer.appendChild(icon);
+    iconContainer.appendChild(iconText);
+  } else {
+    iconContainer.appendChild(iconText);
+    iconContainer.appendChild(icon);
+  }
+
+  return iconContainer;
 }

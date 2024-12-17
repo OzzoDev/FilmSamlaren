@@ -1,3 +1,5 @@
+import { iconValue } from "../utilities/render.js";
+
 export class MovieCard {
   constructor(movie) {
     this.movie = movie;
@@ -6,10 +8,12 @@ export class MovieCard {
   card() {
     const movie = this.movie;
     const title = movie.title;
+    const rating = movie.averageRating;
     const posterSrc = movie.primaryImage;
 
     const movieCard = document.createElement("div");
     const poster = document.createElement("img");
+    const ratingIcon = iconValue(rating, "ribbon", `${title} has an rating of ${rating}`, "right");
 
     poster.setAttribute("src", "../../res/images/moviePosterPlaceholder.jpg");
     poster.setAttribute("class", "poster");
@@ -22,7 +26,7 @@ export class MovieCard {
     };
 
     movieCard.setAttribute("class", "movieCard");
-    movieCard.appendChild(poster);
+    movieCard.append(poster, ratingIcon);
 
     return movieCard;
   }

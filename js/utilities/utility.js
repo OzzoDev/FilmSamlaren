@@ -73,3 +73,10 @@ export function compareWithTempDate(date1, date2, timeLimitInSeconds) {
 
   return d1 > d2;
 }
+
+export function formatLargeNumber(num) {
+  if (num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+  return num;
+}

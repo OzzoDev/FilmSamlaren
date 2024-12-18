@@ -53,8 +53,14 @@ function searchMovies() {
 }
 
 function setSortOrder(option) {
+  const options = Array.from(sortOptions.children).forEach((opt) => opt.classList.remove("selected"));
+
+  option.classList.add("selected");
+
   sortOrder = option.value;
   sortMovies(sortOrder);
+
+  searchMovies();
 }
 
 function sortMovies() {

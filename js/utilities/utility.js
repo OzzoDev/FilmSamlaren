@@ -44,6 +44,8 @@ export function cacheData(key, data, ttl) {
     data: data,
   };
 
+  console.log("Data cached");
+
   save(key, cacheItem);
 }
 

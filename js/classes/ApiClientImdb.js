@@ -2,20 +2,21 @@
 import { IMDB_KEY } from "../utilities/apiKey.js";
 import { IMDB_ENDPOINTS } from "../utilities/endpoints.js";
 import { BASE_TTL } from "../utilities/ttl.js";
-import { cacheData, useCachedData } from "../utilities/utility.js";
+import { cacheData, useCachedData, load } from "../utilities/utility.js";
 import { renderSpinner, renderErrorMessage } from "../utilities/render.js";
 
 export class ApiClientImdb {
-  constructor(actionContainer, endpoint, params) {
+  constructor(actionContainer, endpoint, params, key) {
     this.actionContainer = actionContainer;
     this.endpoint = endpoint;
     this.params = params;
+    this.key = key;
   }
 
   async fetchData() {
     const actionContainer = this.actionContainer;
     const endpoint = this.endpoint;
-    const key = this.endpoint;
+    // const key = this.key || this.endpoint;
     const params = this.params;
 
     let url;
@@ -104,17 +105,32 @@ export class ApiClientImdb {
 
         const res = await response.json();
 
-        cacheData(key, res, BASE_TTL);
-
         return res;
       } catch (error) {
         console.error(error);
+        return [];
       }
     }
+    return [];
   }
 
   async cachedData() {
-    const key = this.endpoint;
+    const key = this.key || this.endpoint;
+
+    const loadedData = useCachedData(key);
+
+    if (loadedData) {
+      console.log("Servering cached data for", key);
+      return loadedData;
+    }
+    console.log("Servering fetched data for", key);
+    const fetchedData = this.fetchData();
+    cacheData(key, fetchedData, BASE_TTL);
+    return fetchedData;
+  }
+
+  async losseData() {
+    const key = this.key || this.endpoint;
 
     const loadedData = useCachedData(key);
 

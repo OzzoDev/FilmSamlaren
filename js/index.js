@@ -2,7 +2,10 @@
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { useScrollEvent, useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
-import { sortAz } from "./utilities/utility.js";
+import { load, sortAz } from "./utilities/utility.js";
+import { BASE_TTL } from "./utilities/ttl.js";
+import { cacheData, useCachedData } from "./utilities/utility.js";
+import { MOVIESBYGENRES_LSK } from "./utilities/keys.js";
 
 const movieCardContainer = document.getElementById("movieCardContainer");
 const showGenresBtn = document.getElementById("categoriesBtn");
@@ -54,15 +57,22 @@ async function searchAllGenres() {
   const genreSearchPromises = [];
   const moviesByAllGenres = [];
 
-  genres.forEach((genre) => {
-    genreSearchPromises.push(new ApiClientImdb(movieCardContainer, "searchByGenre", `&genre=${genre}`).cachedData());
-  });
+  genres.forEach((genre) => genreSearchPromises.push(new ApiClientImdb(movieCardContainer, "searchByGenre", `&genre=${genre}`, MOVIESBYGENRES_LSK).losseData()));
 
   const response = await Promise.all(genreSearchPromises);
 
-  response.forEach((res) => {
-    moviesByAllGenres.push(res.results);
+  response.forEach((data) => {
+    if (data.results) {
+      const movieData = data.results.map((movie) => ({ id: movie.id, genres: movie.genres }));
+      moviesByAllGenres.push(movieData);
+    } else {
+      moviesByAllGenres.push(data);
+    }
   });
+
+  cacheData(MOVIESBYGENRES_LSK, moviesByAllGenres[0], BASE_TTL);
+
+  console.log(moviesByAllGenres);
 
   moviesByGenres = moviesByAllGenres;
 }

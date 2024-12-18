@@ -2,6 +2,7 @@
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { useScrollEvent, useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
+import { sortAz } from "./utilities/utility.js";
 
 const movieCardContainer = document.getElementById("movieCardContainer");
 const showGenresBtn = document.getElementById("categoriesBtn");
@@ -13,6 +14,7 @@ const sortOptions = document.getElementById("sortOptions");
 
 let visibleMovies = 50;
 let movies = [];
+let genres = [];
 let selectedSortOrder = 0;
 let selectGenre;
 
@@ -22,7 +24,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function init() {
   getData();
-  populateGenres();
   populateSortOptions();
   useClickEvent(showGenresBtn, showGenres);
   useClickEvent(hideGenresBtn, hideGenres);
@@ -33,10 +34,17 @@ function init() {
 
 async function getData() {
   const apiClientTopMovies = new ApiClientImdb(movieCardContainer, "topMovies");
+  const apiClientGenres = new ApiClientImdb(movieCardContainer, "genres");
 
-  movies = await apiClientTopMovies.cachedData();
+  const promises = [apiClientTopMovies.cachedData(), apiClientGenres.cachedData()];
+
+  const data = await Promise.all(promises);
+
+  movies = data[0];
+  genres = sortAz(data[1]);
 
   renderMovies();
+  populateGenres();
 }
 
 function showGenres() {
@@ -115,10 +123,8 @@ function sortBy(a, b) {
 }
 
 function populateGenres() {
-  const genres = ["Action", "Action", "Action", "Action", "Action", "Action", "Action", "Action", "Action"];
-
   genres.forEach((gen, index) => {
-    const animationDelay = index * 0.1;
+    const animationDelay = index * 0.04;
     const genre = document.createElement("li");
     const genreText = document.createElement("p");
 

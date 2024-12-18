@@ -100,3 +100,9 @@ export function reverseSort(arr, key) {
     }
   });
 }
+
+export function sortAz(arr) {
+  return (arr = [...arr].sort((a, b) => {
+    return a.localeCompare(b);
+  }));
+}

@@ -1,14 +1,15 @@
 /*Javascript for index/start page only*/
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { MovieCard } from "./classes/MoiveCard.js";
-import { useScrollEvent, useClickEvents } from "./utilities/events.js";
-import { normalSort, reverseSort } from "./utilities/utility.js";
+import { useScrollEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
 
 const movieCardContainer = document.getElementById("movieCardContainer");
 const sortOptions = document.getElementById("sortOptions");
+const searchInput = document.getElementById("searchInput");
 
 let visibleMovies = 50;
 let movies = [];
+let sortOrder = 0;
 
 window.addEventListener("DOMContentLoaded", () => {
   init();
@@ -19,6 +20,7 @@ function init() {
   populateSortOptions();
   useClickEvents(sortOptions.children, setSortOrder);
   useScrollEvent(movieCardContainer, appendMovies);
+  useInputEvent(searchInput, searchMovies);
 }
 
 async function getData() {
@@ -27,41 +29,60 @@ async function getData() {
   movies = await apiClientTopMovies.cachedData();
 
   renderMovies();
+}
 
-  // console.log(movies);
+function searchMovies() {
+  const searchQuery = searchInput.value.trim().toLowerCase();
+
+  if (searchQuery) {
+    movies = [...movies].sort((a, b) => {
+      const aValue = String(a["title"]).toLowerCase();
+      const bValue = String(b["title"]).toLowerCase();
+
+      const aIncludesQuery = aValue.includes(searchQuery);
+      const bIncludesQuery = bValue.includes(searchQuery);
+
+      if (aIncludesQuery && !bIncludesQuery) return -1;
+      if (!aIncludesQuery && bIncludesQuery) return 1;
+
+      return sortBy(a, b, sortOrder);
+    });
+  }
+
+  renderMovies();
 }
 
 function setSortOrder(option) {
-  const sortOrder = option.value;
+  sortOrder = option.value;
   sortMovies(sortOrder);
 }
 
-function sortMovies(sortOrder) {
+function sortMovies() {
+  movies = [...movies].sort((a, b) => {
+    return sortBy(a, b);
+  });
+}
+
+function sortBy(a, b) {
   switch (sortOrder) {
     case 0:
-      movies = normalSort(movies, "title");
-      break;
+      return a.title.localeCompare(b.title);
     case 1:
-      movies = reverseSort(movies, "title");
-      break;
+      return b.title.localeCompare(a.title);
     case 2:
-      movies = reverseSort(movies, "averageRating");
-      break;
+      return b.averageRating - a.averageRating;
     case 3:
-      movies = normalSort(movies, "averageRating");
-      break;
+      return a.averageRating - b.averageRating;
     case 4:
-      movies = reverseSort(movies, "startYear");
-      break;
+      return b.startYear - a.startYear;
     case 5:
-      movies = normalSort(movies, "startYear");
-      break;
+      return a.startYear - b.startYear;
     case 6:
-      movies = reverseSort(movies, "runtimeMinutes");
-      break;
+      return b.runtimeMinutes - a.runtimeMinutes;
     case 7:
-      movies = normalSort(movies, "runtimeMinutes");
-      break;
+      return a.runtimeMinutes - b.runtimeMinutes;
+    default:
+      return 0;
   }
 }
 
@@ -85,7 +106,7 @@ function populateSortOptions() {
   });
 }
 
-function renderMovies(condtion) {
+function renderMovies() {
   movieCardContainer.innerHTML = "";
   visibleMovies = 50;
 

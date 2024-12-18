@@ -13,6 +13,12 @@ export function useClickEvents(elements, callback) {
   });
 }
 
+export function useInputEvent(element, callback) {
+  element.addEventListener("input", () => {
+    callback();
+  });
+}
+
 export function useScrollEvent(element, callback) {
   element.addEventListener("scroll", () => {
     callback();

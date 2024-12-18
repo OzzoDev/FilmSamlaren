@@ -1,15 +1,20 @@
 /*Javascript for index/start page only*/
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { MovieCard } from "./classes/MoiveCard.js";
-import { useScrollEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
+import { useScrollEvent, useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
 
 const movieCardContainer = document.getElementById("movieCardContainer");
-const sortOptions = document.getElementById("sortOptions");
+const showGenresBtn = document.getElementById("categoriesBtn");
+const hideGenresBtn = document.getElementById("hideGenresBtn");
+const genreContainer = document.getElementById("genresContainer");
+const genreList = document.getElementById("genres");
 const searchInput = document.getElementById("searchInput");
+const sortOptions = document.getElementById("sortOptions");
 
 let visibleMovies = 50;
 let movies = [];
-let sortOrder = 0;
+let selectedSortOrder = 0;
+let selectGenre;
 
 window.addEventListener("DOMContentLoaded", () => {
   init();
@@ -17,7 +22,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function init() {
   getData();
+  populateGenres();
   populateSortOptions();
+  useClickEvent(showGenresBtn, showGenres);
+  useClickEvent(hideGenresBtn, hideGenres);
   useClickEvents(sortOptions.children, setSortOrder);
   useScrollEvent(movieCardContainer, appendMovies);
   useInputEvent(searchInput, searchMovies);
@@ -29,6 +37,20 @@ async function getData() {
   movies = await apiClientTopMovies.cachedData();
 
   renderMovies();
+}
+
+function showGenres() {
+  window.scrollTo({ top: 0 });
+  document.body.style.height = "100dvh";
+  document.body.style.overflow = "hidden";
+  genreContainer.classList.remove("hidden");
+}
+
+function hideGenres() {
+  window.scrollTo({ top: 1000 });
+  document.body.style.height = "auto";
+  document.body.style.overflow = "auto";
+  genreContainer.classList.add("hidden");
 }
 
 function searchMovies() {
@@ -45,7 +67,7 @@ function searchMovies() {
       if (aIncludesQuery && !bIncludesQuery) return -1;
       if (!aIncludesQuery && bIncludesQuery) return 1;
 
-      return sortBy(a, b, sortOrder);
+      return sortBy(a, b, selectedSortOrder);
     });
   }
 
@@ -53,12 +75,12 @@ function searchMovies() {
 }
 
 function setSortOrder(option) {
-  const options = Array.from(sortOptions.children).forEach((opt) => opt.classList.remove("selected"));
+  Array.from(sortOptions.children).forEach((opt) => opt.classList.remove("selected"));
 
   option.classList.add("selected");
 
-  sortOrder = option.value;
-  sortMovies(sortOrder);
+  selectedSortOrder = option.value;
+  sortMovies(selectedSortOrder);
 
   searchMovies();
 }
@@ -70,7 +92,7 @@ function sortMovies() {
 }
 
 function sortBy(a, b) {
-  switch (sortOrder) {
+  switch (selectedSortOrder) {
     case 0:
       return a.title.localeCompare(b.title);
     case 1:
@@ -90,6 +112,31 @@ function sortBy(a, b) {
     default:
       return 0;
   }
+}
+
+function populateGenres() {
+  const genres = ["Action", "Action", "Action", "Action", "Action", "Action", "Action", "Action", "Action"];
+
+  genres.forEach((gen, index) => {
+    const animationDelay = index * 0.1;
+    const genre = document.createElement("li");
+    const genreText = document.createElement("p");
+
+    genre.setAttribute("class", "genre");
+    genreText.setAttribute("class", "genreText");
+
+    genreText.innerText = gen;
+    genre.style.animationDelay = `${animationDelay}s`;
+
+    genre.addEventListener("click", () => {
+      selectGenre = gen;
+      console.log(selectGenre);
+      hideGenres();
+    });
+
+    genre.appendChild(genreText);
+    genreList.appendChild(genre);
+  });
 }
 
 function populateSortOptions() {

@@ -195,6 +195,52 @@
   }
 }
 
+.genresContainer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  height: 100000vh;
+  z-index: 100000;
+  background-color: var(--color-surface-a0);
+
+  .hideGenresBtn {
+    width: 50px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+
+  .genres {
+    width: 100%;
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    .genre {
+      opacity: 0;
+      animation-name: fadeIn;
+      animation-duration: 0.3s;
+      animation-timing-function: ease-out;
+      animation-fill-mode: forwards;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--color-surface-mixed-a50);
+      }
+
+      p {
+        font-size: 2rem;
+      }
+    }
+  }
+}
+
 .movieCardContainer {
   max-height: 100vh;
   width: 100%;

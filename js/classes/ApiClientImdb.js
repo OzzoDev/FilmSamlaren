@@ -18,7 +18,13 @@ export class ApiClientImdb {
     const key = this.endpoint;
     const params = this.params;
 
-    const url = IMDB_ENDPOINTS[endpoint];
+    let url;
+
+    if (params) {
+      url = `${IMDB_ENDPOINTS[endpoint]}${params}`;
+    } else {
+      url = IMDB_ENDPOINTS[endpoint];
+    }
 
     if (url) {
       const options = {
@@ -27,7 +33,6 @@ export class ApiClientImdb {
           "x-rapidapi-key": IMDB_KEY,
           "x-rapidapi-host": "imdb236.p.rapidapi.com",
         },
-        body: JSON.stringify(params),
       };
 
       renderSpinner(actionContainer);

@@ -15,6 +15,7 @@ const sortOptions = document.getElementById("sortOptions");
 let visibleMovies = 50;
 let movies = [];
 let genres = [];
+let moviesByGenres = [];
 let selectedSortOrder = 0;
 let selectGenre;
 
@@ -38,13 +39,32 @@ async function getData() {
 
   const promises = [apiClientTopMovies.cachedData(), apiClientGenres.cachedData()];
 
-  const data = await Promise.all(promises);
+  const response = await Promise.all(promises);
 
-  movies = data[0];
-  genres = sortAz(data[1]);
+  movies = response[0];
+  genres = sortAz(response[1]);
 
   renderMovies();
   populateGenres();
+
+  searchAllGenres();
+}
+
+async function searchAllGenres() {
+  const genreSearchPromises = [];
+  const moviesByAllGenres = [];
+
+  genres.forEach((genre) => {
+    genreSearchPromises.push(new ApiClientImdb(movieCardContainer, "searchByGenre", `&genre=${genre}`).cachedData());
+  });
+
+  const response = await Promise.all(genreSearchPromises);
+
+  response.forEach((res) => {
+    moviesByAllGenres.push(res.results);
+  });
+
+  moviesByGenres = moviesByAllGenres;
 }
 
 function showGenres() {

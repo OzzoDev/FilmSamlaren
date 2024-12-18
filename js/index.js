@@ -1,7 +1,8 @@
 /*Javascript for index/start page only*/
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { MovieCard } from "./classes/MoiveCard.js";
-import { useScrollEvent } from "./utilities/events.js";
+import { useScrollEvent, useClickEvents } from "./utilities/events.js";
+import { normalSort, reverseSort } from "./utilities/utility.js";
 
 const movieCardContainer = document.getElementById("movieCardContainer");
 const sortOptions = document.getElementById("sortOptions");
@@ -16,6 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
 function init() {
   getData();
   populateSortOptions();
+  useClickEvents(sortOptions.children, setSortOrder);
   useScrollEvent(movieCardContainer, appendMovies);
 }
 
@@ -26,13 +28,48 @@ async function getData() {
 
   renderMovies();
 
-  console.log(movies);
+  // console.log(movies);
+}
+
+function setSortOrder(option) {
+  const sortOrder = option.value;
+  sortMovies(sortOrder);
+}
+
+function sortMovies(sortOrder) {
+  switch (sortOrder) {
+    case 0:
+      movies = normalSort(movies, "title");
+      break;
+    case 1:
+      movies = reverseSort(movies, "title");
+      break;
+    case 2:
+      movies = reverseSort(movies, "averageRating");
+      break;
+    case 3:
+      movies = normalSort(movies, "averageRating");
+      break;
+    case 4:
+      movies = reverseSort(movies, "startYear");
+      break;
+    case 5:
+      movies = normalSort(movies, "startYear");
+      break;
+    case 6:
+      movies = reverseSort(movies, "runtimeMinutes");
+      break;
+    case 7:
+      movies = normalSort(movies, "runtimeMinutes");
+      break;
+  }
 }
 
 function populateSortOptions() {
-  const options = ["A- Z", "Z - A", "High - Low Rating", "Low - High Rating", "New - Old", "Old - New"];
+  const options = ["A- Z", "Z - A", "High - Low Rating", "Low - High Rating", "New - Old", "Old - New", "High - Low Duration", "Low - High Duration"];
 
   options.forEach((opt, index) => {
+    const animationDelay = index * 0.1;
     const option = document.createElement("li");
     const optionText = document.createElement("p");
 
@@ -40,9 +77,8 @@ function populateSortOptions() {
     optionText.setAttribute("class", "sortOptionText");
 
     optionText.innerText = opt;
-
-    const animationdelay = index * 0.1;
-    option.style.animationDelay = `${animationdelay}s`;
+    option.style.animationDelay = `${animationDelay}s`;
+    option.setAttribute("value", index);
 
     option.appendChild(optionText);
     sortOptions.appendChild(option);

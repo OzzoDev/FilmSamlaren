@@ -5,6 +5,14 @@ export function useClickEvent(element, callback) {
   });
 }
 
+export function useClickEvents(elements, callback) {
+  Array.from(elements).forEach((element) => {
+    element.addEventListener("click", () => {
+      callback(element);
+    });
+  });
+}
+
 export function useScrollEvent(element, callback) {
   element.addEventListener("scroll", () => {
     callback();

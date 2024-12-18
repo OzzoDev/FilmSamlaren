@@ -80,3 +80,23 @@ export function formatLargeNumber(num) {
   }
   return num;
 }
+
+export function normalSort(arr, key) {
+  return [...arr].sort((a, b) => {
+    if (typeof a[key] === "string") {
+      return a[key].localeCompare(b[key]);
+    } else {
+      return a[key] - b[key];
+    }
+  });
+}
+
+export function reverseSort(arr, key) {
+  return [...arr].sort((a, b) => {
+    if (typeof a[key] === "string") {
+      return b[key].localeCompare(a[key]);
+    } else {
+      return b[key] - a[key];
+    }
+  });
+}

@@ -30,6 +30,7 @@
   gap: 20px;
 
   .categoriesBtn {
+    width: 50px;
     cursor: pointer;
   }
 }
@@ -42,4 +43,45 @@
   flex-wrap: wrap;
   gap: 30px;
   overflow-y: auto;
+}
+
+.searchBox {
+  position: relative;
+
+  &:hover .searchInput {
+    width: 350px;
+    background: var(--color-surface-a20);
+  }
+
+  &:hover i {
+    left: auto;
+    right: 10px;
+    transform: translate(0, -50%);
+    opacity: 0;
+  }
+
+  .searchInput {
+    padding: 12px;
+    width: 60px;
+    border-radius: 50px;
+    outline: none;
+    transition: 0.5s;
+    color: var(--color-primary-a50);
+    border: 3px solid var(--color-primary-a50);
+    background: none;
+
+    &::placeholder {
+      opacity: 0;
+    }
+  }
+
+  i {
+    font-size: 1.4rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--color-primary-a50);
+    transition: 0.7s;
+  }
 }

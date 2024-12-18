@@ -4,6 +4,7 @@ import { MovieCard } from "./classes/MoiveCard.js";
 import { useScrollEvent } from "./utilities/events.js";
 
 const movieCardContainer = document.getElementById("movieCardContainer");
+const sortOptions = document.getElementById("sortOptions");
 
 let visibleMovies = 50;
 let movies = [];
@@ -14,6 +15,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function init() {
   getData();
+  populateSortOptions();
   useScrollEvent(movieCardContainer, appendMovies);
 }
 
@@ -25,6 +27,26 @@ async function getData() {
   renderMovies();
 
   console.log(movies);
+}
+
+function populateSortOptions() {
+  const options = ["A- Z", "Z - A", "High - Low Rating", "Low - High Rating", "New - Old", "Old - New"];
+
+  options.forEach((opt, index) => {
+    const option = document.createElement("li");
+    const optionText = document.createElement("p");
+
+    option.setAttribute("class", "sortOption");
+    optionText.setAttribute("class", "sortOptionText");
+
+    optionText.innerText = opt;
+
+    const animationdelay = index * 0.1;
+    option.style.animationDelay = `${animationdelay}s`;
+
+    option.appendChild(optionText);
+    sortOptions.appendChild(option);
+  });
 }
 
 function renderMovies(condtion) {

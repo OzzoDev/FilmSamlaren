@@ -46,7 +46,7 @@ async function getSearchedMovies(query) {
   const promises = [new ApiClientOmdb(movieCardContainer).searchMovies(query, 1)];
 
   const data = await Promise.all(promises);
-  console.log("Data from omdb", data);
+  // console.log("Data from omdb", data);
 
   return data;
 }
@@ -151,13 +151,22 @@ function hideGenres() {
 async function searchMovies() {
   const searchQuery = searchInput.value.trim().toLowerCase();
 
-  const searchedMovies = await getSearchedMovies(searchQuery);
-  const results = searchedMovies[0].Search;
+  if (searchQuery.length > 4) {
+    const searchedMovies = await new ApiClientOmdb(movieCardContainer).searchMovies(searchQuery, 1);
 
-  if (results) {
-    movies = results;
-    renderMovies();
+    movies = [];
+
+    searchedMovies.forEach((movie) => {
+      const isDefined = movie.primaryImage && typeof movie.primaryImage === "string" && movie.primaryImage.startsWith("http");
+      if (isDefined) {
+        movies.push(movie);
+      }
+    });
+  } else {
+    const top250 = await apiClientTopMovies.cachedData();
+    movies = top250;
   }
+  renderMovies();
 }
 
 function setSortOrder(option) {

@@ -1,9 +1,11 @@
 /*Main ApiClient to fetch data*/
 import { OMDb_KEY } from "../utilities/apiKey.js";
 import { OMDB_URL } from "../utilities/endpoints.js";
+import { IMDB_URL } from "../utilities/endpoints.js";
 import { BASE_TTL } from "../utilities/ttl.js";
 import { cacheData, useCachedData, inSensitive } from "../utilities/utility.js";
 import { renderSpinner, renderErrorMessage } from "../utilities/render.js";
+import { ApiClientImdb } from "./ApiClientImdb.js";
 
 export class ApiClientOmdb {
   constructor(actionContainer, key) {
@@ -12,22 +14,42 @@ export class ApiClientOmdb {
   }
 
   async searchMovies(query, page) {
+    const actionContainer = this.actionContainer;
     const params = `?s=${encodeURIComponent(query)}&type=movie&page=${page}&apikey=${OMDb_KEY}`;
-    return this.fetchData(false, params);
+
+    const fetchedMovies = await this.fetchData(false, params);
+    const searchedMovies = fetchedMovies.Search;
+
+    if (searchedMovies) {
+      const imdbMoviePromises = searchedMovies.map((movie) => {
+        return new ApiClientImdb(actionContainer, `${IMDB_URL}/${movie.imdbID}`).cachedData();
+      });
+
+      const data = await Promise.allSettled(imdbMoviePromises);
+
+      const imdbMovies = data
+        .map((result) => {
+          if (result.status === "fulfilled") {
+            return result.value;
+          } else {
+            return null;
+          }
+        })
+        .filter((movie) => movie !== null);
+
+      return imdbMovies;
+    }
+
+    return [];
   }
 
   async fetchData(cache, params) {
     const actionContainer = this.actionContainer;
     const key = this.key;
-    // const params = this.params;
-
-    // let url = `${OMDB_URL}/?s=${encodeURIComponent("Aquaman")}&apikey=${OMDb_KEY}&${params}`;
 
     let url = `${OMDB_URL}/${params}`;
 
     renderSpinner(actionContainer);
-
-    console.log("Url: ", url);
 
     try {
       const response = await fetch(url);

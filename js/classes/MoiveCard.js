@@ -11,7 +11,7 @@ export class MovieCard {
 
     const title = movie.title || movie.primaryTitle;
     const rating = movie.averageRating || 0;
-    const posterSrc = movie.primaryImage || "../../res/images/moviePosterPlaceholder.jpg";
+    const posterSrc = movie.primaryImage || movie.Poster || "../../res/images/moviePosterPlaceholder.jpg";
 
     const movieCard = document.createElement("div");
     const poster = document.createElement("img");

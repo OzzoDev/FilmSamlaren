@@ -1,5 +1,6 @@
 /*Javascript for index/start page only*/
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
+import { ApiClientOmdb } from "./classes/ApiClientOmdb.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { useScrollEvent, useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
 import { sortAz } from "./utilities/utility.js";
@@ -32,12 +33,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function init() {
   getData();
+  // getSearchedMovies();
   populateSortOptions();
   useClickEvent(showGenresBtn, showGenres);
   useClickEvent(hideGenresBtn, hideGenres);
   useClickEvents(sortOptions.children, setSortOrder);
   useScrollEvent(movieCardContainer, appendMovies);
   useInputEvent(searchInput, searchMovies);
+}
+
+async function getSearchedMovies(query) {
+  const promises = [new ApiClientOmdb(movieCardContainer).searchMovies(query, 1)];
+
+  const data = await Promise.all(promises);
+  console.log("Data from omdb", data);
+
+  return data;
 }
 
 async function getData() {
@@ -58,7 +69,7 @@ async function getData() {
 
 async function searchAllGenres() {
   const genreSearchPromises = [];
-  const moviesByAllGenres = [];
+  let moviesByAllGenres = [];
 
   genres.forEach((genre, index) => {
     if (index > 0) {
@@ -68,18 +79,24 @@ async function searchAllGenres() {
 
   const response = await Promise.all(genreSearchPromises);
 
-  const isFetchedData = response.some((res) => res.results);
+  const fetchableGenres = [...genres].slice(1);
+  const isFetchedData = response.every((res) => res.results);
 
   if (isFetchedData) {
-    response.forEach((data) => {
-      const movieIDs = data.results.map((movie) => ({ id: movie.id }));
-      moviesByAllGenres.push(movieIDs);
+    response.forEach((data, index) => {
+      if (data.results) {
+        const movieIDs = data.results.map((movie) => ({ id: movie.id }));
+        moviesByAllGenres.push({ movies: movieIDs, genre: fetchableGenres[index] });
+      } else {
+        moviesByAllGenres.push({ movies: data, genre: fetchableGenres[index] });
+      }
     });
     cacheData(MOVIESBYGENRES_LSK, moviesByAllGenres, BASE_TTL);
   } else {
-    moviesByAllGenres.push(response[0]);
+    moviesByAllGenres = response[0];
   }
   moviesByGenres = moviesByAllGenres;
+  console.log("All genres movies: ", moviesByGenres);
 }
 
 async function getMoviesByGenre(genre) {
@@ -88,15 +105,13 @@ async function getMoviesByGenre(genre) {
     movies = top250;
     renderMovies();
   } else {
-    console.log("Selected genre", genre);
+    const selectedMoviesByGenre = moviesByGenres.find((movie) => movie.genre === genre);
 
-    const selectedMoviesByGenre = moviesByGenres[genres.indexOf(genre)];
+    console.log("sel", selectedMoviesByGenre.movies);
 
-    console.log("Movie ids: ", selectedMoviesByGenre);
-
-    const moviePromises = selectedMoviesByGenre.map((movieID) => {
-      if (movieID && movieID.id) {
-        return new ApiClientImdb(movieCardContainer, `${IMDB_URL}/${movieID.id}`).cachedData();
+    const moviePromises = selectedMoviesByGenre.movies.map((movie) => {
+      if (movie && movie.id) {
+        return new ApiClientImdb(movieCardContainer, `${IMDB_URL}/${movie.id}`).cachedData();
       }
     });
     const moviesByGenre = await Promise.all(moviePromises);
@@ -109,6 +124,11 @@ async function getMoviesByGenre(genre) {
         movies.push(movie);
       }
     });
+
+    // console.log("Action movies: ", movies);
+
+    const highLowRatingOption = sortOptions.children[2];
+    setSortOrder(highLowRatingOption);
 
     renderMovies();
   }
@@ -128,25 +148,16 @@ function hideGenres() {
   genreContainer.classList.add("hidden");
 }
 
-function searchMovies() {
+async function searchMovies() {
   const searchQuery = searchInput.value.trim().toLowerCase();
 
-  if (searchQuery) {
-    movies = [...movies].sort((a, b) => {
-      const aValue = String(a["title"]).toLowerCase();
-      const bValue = String(b["title"]).toLowerCase();
+  const searchedMovies = await getSearchedMovies(searchQuery);
+  const results = searchedMovies[0].Search;
 
-      const aIncludesQuery = aValue.includes(searchQuery);
-      const bIncludesQuery = bValue.includes(searchQuery);
-
-      if (aIncludesQuery && !bIncludesQuery) return -1;
-      if (!aIncludesQuery && bIncludesQuery) return 1;
-
-      return sortBy(a, b, selectedSortOrder);
-    });
+  if (results) {
+    movies = results;
+    renderMovies();
   }
-
-  renderMovies();
 }
 
 function setSortOrder(option) {

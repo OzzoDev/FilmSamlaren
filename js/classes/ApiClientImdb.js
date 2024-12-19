@@ -2,21 +2,21 @@
 import { IMDB_KEY } from "../utilities/apiKey.js";
 import { IMDB_ENDPOINTS } from "../utilities/endpoints.js";
 import { BASE_TTL } from "../utilities/ttl.js";
-import { cacheData, useCachedData, load } from "../utilities/utility.js";
+import { cacheData, useCachedData, inSensitive } from "../utilities/utility.js";
 import { renderSpinner, renderErrorMessage } from "../utilities/render.js";
 
 export class ApiClientImdb {
   constructor(actionContainer, endpoint, params, key) {
     this.actionContainer = actionContainer;
-    this.endpoint = endpoint;
+    this.endpoint = inSensitive(endpoint);
     this.params = params;
-    this.key = key;
+    this.key = inSensitive(key || endpoint);
   }
 
-  async fetchData() {
+  async fetchData(cache) {
     const actionContainer = this.actionContainer;
     const endpoint = this.endpoint;
-    // const key = this.key || this.endpoint;
+    const key = this.key;
     const params = this.params;
 
     let url;
@@ -105,6 +105,10 @@ export class ApiClientImdb {
 
         const res = await response.json();
 
+        if (cache) {
+          cacheData(key, res, BASE_TTL);
+        }
+
         return res;
       } catch (error) {
         console.error(error);
@@ -115,7 +119,7 @@ export class ApiClientImdb {
   }
 
   async cachedData() {
-    const key = this.key || this.endpoint;
+    const key = this.key;
 
     const loadedData = useCachedData(key);
 
@@ -124,13 +128,12 @@ export class ApiClientImdb {
       return loadedData;
     }
     console.log("Servering fetched data for", key);
-    const fetchedData = this.fetchData();
-    cacheData(key, fetchedData, BASE_TTL);
+    const fetchedData = this.fetchData(true);
     return fetchedData;
   }
 
   async losseData() {
-    const key = this.key || this.endpoint;
+    const key = this.key;
 
     const loadedData = useCachedData(key);
 
@@ -139,7 +142,7 @@ export class ApiClientImdb {
       return loadedData;
     }
     console.log("Servering fetched data for", key);
-    const fetchedData = this.fetchData();
+    const fetchedData = this.fetchData(false);
     return fetchedData;
   }
 }

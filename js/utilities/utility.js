@@ -44,7 +44,7 @@ export function cacheData(key, data, ttl) {
     data: data,
   };
 
-  console.log("Data cached");
+  console.log("Data cached", cacheItem);
 
   save(key, cacheItem);
 }
@@ -107,4 +107,17 @@ export function sortAz(arr) {
   return (arr = [...arr].sort((a, b) => {
     return a.localeCompare(b);
   }));
+}
+
+export function removeAllWhitespaces(str) {
+  return str.replace(/\s+/g, "");
+}
+
+export function lowercaseFirstChar(str) {
+  if (str.length === 0) return str; // Return the empty string as is
+  return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
+export function inSensitive(str) {
+  return removeAllWhitespaces(lowercaseFirstChar(str));
 }

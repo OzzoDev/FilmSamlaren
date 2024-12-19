@@ -37,7 +37,7 @@ function init() {
 }
 
 async function getData() {
-  const apiClientTopMovies = new ApiClientImdb(movieCardContainer, "topMovies");
+  const apiClientTopMovies = new ApiClientImdb(movieCardContainer, "Top 250");
   const apiClientGenres = new ApiClientImdb(movieCardContainer, "genres");
 
   const promises = [apiClientTopMovies.cachedData(), apiClientGenres.cachedData()];
@@ -46,6 +46,8 @@ async function getData() {
 
   movies = response[0];
   genres = sortAz(response[1]);
+
+  genres.unshift("Top 250");
 
   renderMovies();
   populateGenres();
@@ -63,8 +65,8 @@ async function searchAllGenres() {
 
   response.forEach((data) => {
     if (data.results) {
-      const movieData = data.results.map((movie) => ({ id: movie.id, genres: movie.genres }));
-      moviesByAllGenres.push(movieData);
+      const movieIDs = data.results.map((movie) => ({ id: movie.id }));
+      moviesByAllGenres.push(movieIDs);
     } else {
       moviesByAllGenres.push(data);
     }

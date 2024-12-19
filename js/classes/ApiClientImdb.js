@@ -21,10 +21,14 @@ export class ApiClientImdb {
 
     let url;
 
-    if (params) {
-      url = `${IMDB_ENDPOINTS[endpoint]}${params}`;
+    if (endpoint in IMDB_ENDPOINTS) {
+      if (params) {
+        url = `${IMDB_ENDPOINTS[endpoint]}${params}`;
+      } else {
+        url = IMDB_ENDPOINTS[endpoint];
+      }
     } else {
-      url = IMDB_ENDPOINTS[endpoint];
+      url = endpoint;
     }
 
     if (url) {
@@ -124,10 +128,10 @@ export class ApiClientImdb {
     const loadedData = useCachedData(key);
 
     if (loadedData) {
-      console.log("Servering cached data for", key);
+      // console.log("Servering cached data for", key);
       return loadedData;
     }
-    console.log("Servering fetched data for", key);
+    // console.log("Servering fetched data for", key);
     const fetchedData = this.fetchData(true);
     return fetchedData;
   }
@@ -138,10 +142,10 @@ export class ApiClientImdb {
     const loadedData = useCachedData(key);
 
     if (loadedData) {
-      console.log("Servering cached data for", key);
+      // console.log("Servering cached data for", key);
       return loadedData;
     }
-    console.log("Servering fetched data for", key);
+    // console.log("Servering fetched data for", key);
     const fetchedData = this.fetchData(false);
     return fetchedData;
   }

@@ -44,8 +44,6 @@ export function cacheData(key, data, ttl) {
     data: data,
   };
 
-  console.log("Data cached", cacheItem);
-
   save(key, cacheItem);
 }
 
@@ -120,4 +118,13 @@ export function lowercaseFirstChar(str) {
 
 export function inSensitive(str) {
   return removeAllWhitespaces(lowercaseFirstChar(str));
+}
+
+export function isValidImage(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
 }

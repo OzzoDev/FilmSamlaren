@@ -149,3 +149,21 @@ export function valueWithHeader(value, headerText, containerClass, headerClass, 
 
   return container;
 }
+
+export function iconLink(url, src, altTitle, className) {
+  const link = document.createElement("a");
+  const icon = document.createElement("img");
+
+  link.setAttribute("class", className);
+  link.setAttribute("alt", altTitle);
+  link.setAttribute("title", altTitle);
+  link.setAttribute("href", url);
+  link.setAttribute("target", "_blank");
+
+  icon.setAttribute("src", `../../res/icons/${src}.svg`);
+  icon.setAttribute("class", "icon icon-scale");
+
+  link.appendChild(icon);
+
+  return link;
+}

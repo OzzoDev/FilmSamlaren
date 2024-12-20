@@ -1,5 +1,5 @@
 /*Main ApiClient to fetch data*/
-import { OMDb_KEY } from "../utilities/apiKey.js";
+import { OMDB_KEY } from "../utilities/apiKey.js";
 import { OMDB_URL } from "../utilities/endpoints.js";
 import { IMDB_URL } from "../utilities/endpoints.js";
 import { BASE_TTL } from "../utilities/ttl.js";
@@ -15,7 +15,7 @@ export class ApiClientOmdb {
 
   async searchMovies(query, page) {
     const actionContainer = this.actionContainer;
-    const params = `?s=${encodeURIComponent(query)}&type=movie&page=${page}&apikey=${OMDb_KEY}`;
+    const params = `?s=${encodeURIComponent(query)}&type=movie&page=${page}&apikey=${OMDB_KEY}`;
 
     const fetchedMovies = await this.fetchData(false, params);
     const searchedMovies = fetchedMovies.Search;

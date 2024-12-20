@@ -3,7 +3,7 @@ import { load, formatMinutes, formatLargeNumber } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
-import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader } from "./utilities/render.js";
+import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader, iconLink } from "./utilities/render.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
 
@@ -41,6 +41,7 @@ function renderMovieDetails() {
   renderLanguages();
   renderCinematicTeam();
   renderFinancials();
+  renderExternalLinks();
 }
 
 function renderHeading() {
@@ -238,4 +239,22 @@ function renderFinancials() {
   financialsEl.append(budgetEl, revenueEl);
 
   movieDetailsEl.appendChild(financialsEl);
+}
+
+function renderExternalLinks() {
+  const title = movie.primaryTitle;
+  const links = movie.externalLinks || [];
+  const linksEl = document.createElement("ul");
+
+  const socials = ["instagram", "facebook", "twitter", "tiktok"];
+
+  linksEl.setAttribute("class", "links");
+
+  links.forEach((link) => {
+    const iconPath = socials.find((social) => link.includes(social)) || "internet";
+    const linkEl = iconLink(link, iconPath, `Visit ${title}'s ${iconPath}`, "link");
+    linksEl.appendChild(linkEl);
+  });
+
+  movieDetailsEl.appendChild(linksEl);
 }

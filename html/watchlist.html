@@ -5,10 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Discover your next movie today" />
     <title>FilmSamlaren</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="../css/normalize.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/spinner.css" />
+    <link rel="stylesheet" href="../css/watchlist.css" />
+    <script type="module" src="../js/script.js" defer></script>
+    <script type="module" src="../js/watchlist.js" defer></script>
   </head>
   <body>
     <header>
       <!-- header content -->
+      <a href="../html/index.html" title="Start page">
+        <img src="../res/images/logo.png" alt="Film Flicker" class="logo" />
+      </a>
+      <nav>
+        <ul id="navUl" class="navUl">
+          <li>
+            <a href="../html/watchlist.html" title="Watchlist">
+              <img src="../res/icons/watchlist.svg" alt="watchlist" class="icon icon-scale" />
+              <p>Watchlist</p>
+            </a>
+          </li>
+          <li>
+            <a href="../html/moviequiz.html" title="Moviequiz">
+              <img src="../res/icons/quiz.svg" alt="moviequiz" class="icon icon-scale" />
+              <p>Movie quiz</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div id="menuToggle" class="icon nav-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </header>
     <main>
       <!-- main content -->

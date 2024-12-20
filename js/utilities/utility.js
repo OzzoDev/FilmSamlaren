@@ -129,6 +129,21 @@ export function isValidImage(url) {
   });
 }
 
+export function formatMinutes(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  let formatted = "";
+  if (hours > 0) {
+    formatted += `${hours}h `;
+  }
+  if (remainingMinutes > 0) {
+    formatted += `${remainingMinutes}min`;
+  }
+
+  return formatted.trim();
+}
+
 export function redirect(path) {
   window.location.href = path;
 }

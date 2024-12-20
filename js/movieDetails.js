@@ -1,5 +1,5 @@
 /*Js for movieDetails page*/
-import { load } from "./utilities/utility.js";
+import { load, formatMinutes } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
@@ -28,8 +28,13 @@ async function getMovieDetails() {
 
     console.log("Movie details: ", movieDetails);
 
-    renderHeading(movieDetailsEl);
+    renderMovieDetails();
   }
+}
+
+function renderMovieDetails() {
+  renderHeading(movieDetailsEl);
+  renderYearDuration(movieDetailsEl);
 }
 
 function renderHeading(parent) {
@@ -38,7 +43,7 @@ function renderHeading(parent) {
 
   const headingEl = document.createElement("div");
   const addToWatchListEl = iconBtn("plus", `Add ${title} to watchlist`);
-  const titleEl = document.createElement("h2");
+  const titleEl = document.createElement("h1");
   const ratingIconEl = iconValue(rating, "ribbon", `${title} has an rating of ${rating}`, "right");
 
   headingEl.setAttribute("class", "heading");
@@ -51,4 +56,24 @@ function renderHeading(parent) {
   headingEl.append(addToWatchListEl, titleEl, ratingIconEl);
 
   parent.appendChild(headingEl);
+}
+
+function renderYearDuration(parent) {
+  const year = movie.startYear;
+  const duration = formatMinutes(movie.runtimeMinutes);
+
+  const yearDurationEl = document.createElement("div");
+  const yearEl = document.createElement("p");
+  const durationEl = document.createElement("p");
+
+  yearDurationEl.setAttribute("class", "yearDuration");
+  yearEl.setAttribute("class", "year");
+  durationEl.setAttribute("class", "duration");
+
+  yearEl.innerText = year;
+  durationEl.innerText = duration;
+
+  yearDurationEl.append(yearEl, durationEl);
+
+  parent.appendChild(yearDurationEl);
 }

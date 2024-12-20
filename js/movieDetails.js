@@ -33,14 +33,15 @@ async function getMovieDetails() {
 }
 
 function renderMovieDetails() {
-  renderHeading(movieDetailsEl);
-  renderYearDuration(movieDetailsEl);
-  renderPoster(movieDetailsEl);
-  renderCinematicAtlas(movieDetailsEl);
-  renderDesc(movieDetailsEl);
+  renderHeading();
+  renderYearDuration();
+  renderPoster();
+  renderCinematicAtlas();
+  renderDesc();
+  renderLanguages();
 }
 
-function renderHeading(parent) {
+function renderHeading() {
   const title = movie.primaryTitle;
   const rating = movie.averageRating;
 
@@ -58,10 +59,10 @@ function renderHeading(parent) {
 
   headingEl.append(addToWatchListEl, titleEl, ratingIconEl);
 
-  parent.appendChild(headingEl);
+  movieDetailsEl.appendChild(headingEl);
 }
 
-function renderYearDuration(parent) {
+function renderYearDuration() {
   const year = movie.startYear;
   const duration = formatMinutes(movie.runtimeMinutes);
 
@@ -78,10 +79,10 @@ function renderYearDuration(parent) {
 
   yearDurationEl.append(yearEl, durationEl);
 
-  parent.appendChild(yearDurationEl);
+  movieDetailsEl.appendChild(yearDurationEl);
 }
 
-function renderPoster(parent) {
+function renderPoster() {
   const posterSrc = movie.primaryImage;
   const title = movie.primaryTitle;
 
@@ -102,10 +103,10 @@ function renderPoster(parent) {
     loadingPoster.setAttribute("class", posterSrc);
   }
 
-  parent.appendChild(posterEl);
+  movieDetailsEl.appendChild(posterEl);
 }
 
-function renderCinematicAtlas(parent) {
+function renderCinematicAtlas() {
   const countries = movie.countriesOfOrigin || [];
   const locations = movie.filmingLocations || [];
   const genres = movie.genres || [];
@@ -135,15 +136,26 @@ function renderCinematicAtlas(parent) {
 
   cinematicAtlasEl.append(countriesEl, genresEl, locationsEl, interestsEl);
 
-  parent.appendChild(cinematicAtlasEl);
+  movieDetailsEl.appendChild(cinematicAtlasEl);
 }
 
-function renderDesc(parent) {
+function renderDesc() {
   const desc = movie.description;
   const descEl = document.createElement("p");
 
   descEl.setAttribute("class", "desc");
   descEl.innerText = desc;
 
-  parent.appendChild(descEl);
+  movieDetailsEl.appendChild(descEl);
+}
+
+function renderLanguages() {
+  const languages = movie.spokenLanguages;
+  const languagesEl = document.createElement("ul");
+
+  languagesEl.setAttribute("class", "languages");
+
+  populateUl(languagesEl, languages, "language");
+
+  movieDetailsEl.appendChild(languagesEl);
 }

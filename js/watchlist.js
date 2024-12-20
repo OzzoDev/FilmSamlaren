@@ -7,6 +7,7 @@ import { MovieCard } from "./classes/MoiveCard.js";
 import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader, iconLink, setIcon } from "./utilities/render.js";
 import { useClickEvent } from "./utilities/events.js";
 
+const main = document.body.getElementsByTagName("main")[0];
 const watchlistEl = document.getElementById("watchlist");
 
 let watchlist = load(WATCHLIST_LSK) || [];
@@ -37,7 +38,28 @@ async function loadWatchList() {
     })
     .filter((movie) => movie !== null);
 
+  renderPageMessage();
   renderWatchList();
+}
+
+function renderPageMessage() {
+  const prevPageMessage = document.getElementsByClassName("pageMessage")[0];
+  if (prevPageMessage) {
+    prevPageMessage.remove();
+  }
+
+  const pageMessage = document.createElement("h1");
+
+  if (movies.length > 0) {
+    pageMessage.setAttribute("class", "pageMessage numMovies");
+    pageMessage.innerText = "Your watchlist is loking hot🔥";
+    pageMessage.setAttribute("data-movies", movies.length);
+  } else {
+    pageMessage.setAttribute("class", "pageMessage");
+    pageMessage.innerText = "Your watchlist is empty 🎥";
+  }
+
+  main.insertBefore(pageMessage, watchlistEl);
 }
 
 function renderWatchList() {

@@ -3,7 +3,7 @@ import { load, formatMinutes } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
-import { iconBtn, iconValue } from "./utilities/render.js";
+import { iconBtn, iconValue, populateUl } from "./utilities/render.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
 
@@ -36,6 +36,7 @@ function renderMovieDetails() {
   renderHeading(movieDetailsEl);
   renderYearDuration(movieDetailsEl);
   renderPoster(movieDetailsEl);
+  renderCinematicAtlas(movieDetailsEl);
 }
 
 function renderHeading(parent) {
@@ -101,4 +102,37 @@ function renderPoster(parent) {
   }
 
   parent.appendChild(posterEl);
+}
+
+function renderCinematicAtlas(parent) {
+  const countries = movie.countriesOfOrigin || [];
+  const locations = movie.filmingLocations || [];
+  const genres = movie.genres || [];
+  const interests = movie.interests || [];
+
+  const cinematicAtlasEl = document.createElement("div");
+  const countriesEl = document.createElement("ul");
+  const locationsEl = document.createElement("ul");
+  const genresEl = document.createElement("ul");
+  const interestsEl = document.createElement("ul");
+
+  cinematicAtlasEl.setAttribute("class", "cinematicAtlas");
+  countriesEl.setAttribute("class", "countries dataList");
+  locationsEl.setAttribute("class", "locations dataList");
+  genresEl.setAttribute("class", "genres dataList dataListRight");
+  interestsEl.setAttribute("class", "interests dataList dataListRight");
+
+  countriesEl.setAttribute("data-title", "Countries");
+  locationsEl.setAttribute("data-title", "Locations");
+  genresEl.setAttribute("data-title", "Genres");
+  interestsEl.setAttribute("data-title", "Interests");
+
+  populateUl(countriesEl, countries, "country dataItem");
+  populateUl(locationsEl, locations, "location dataItem");
+  populateUl(genresEl, genres, "genres dataItem");
+  populateUl(interestsEl, interests, "interests dataItem");
+
+  cinematicAtlasEl.append(countriesEl, genresEl, locationsEl, interestsEl);
+
+  parent.appendChild(cinematicAtlasEl);
 }

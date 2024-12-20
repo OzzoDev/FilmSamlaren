@@ -100,3 +100,12 @@ export function setInnerText(element, text, classes) {
   element.setAttribute("class", classes);
   element.innerText = text;
 }
+
+export function populateUl(parent, data, itemClass) {
+  data.forEach((item) => {
+    const li = document.createElement("li");
+    li.setAttribute("class", itemClass);
+    li.innerText = item;
+    parent.appendChild(li);
+  });
+}

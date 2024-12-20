@@ -36,5 +36,55 @@ main {
     .poster {
       width: min(100%, 1000px);
     }
+
+    .cinematicAtlas {
+      width: min(100%, 1100px);
+      padding: 0 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      row-gap: 30px;
+
+      .dataList {
+        width: 100%;
+        padding: 30px 40px 40px 40px;
+        border-radius: 20px;
+        border: 1px solid var(--color-primary-a50);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+
+        &::after {
+          content: attr(data-title);
+          font-size: 0.8rem;
+          position: absolute;
+          top: -22px;
+          left: -20px;
+          padding: 10px;
+          border-radius: 50px;
+          border: 1px solid var(--color-primary-a50);
+          background-color: var(--color-surface-a0);
+        }
+      }
+
+      .dataListRight {
+        &::after {
+          left: auto;
+          right: -22px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .cinematicAtlas {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 70px;
+    row-gap: 70px !important;
+    align-items: stretch !important;
   }
 }

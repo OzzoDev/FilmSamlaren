@@ -3,7 +3,7 @@ import { load, formatMinutes } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
-import { iconBtn, iconValue, populateUl } from "./utilities/render.js";
+import { iconBtn, iconValue, populateUl, ulWithHeader } from "./utilities/render.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
 
@@ -39,6 +39,7 @@ function renderMovieDetails() {
   renderCinematicAtlas();
   renderDesc();
   renderLanguages();
+  renderCinematicTeam();
 }
 
 function renderHeading() {
@@ -158,4 +159,67 @@ function renderLanguages() {
   populateUl(languagesEl, languages, "language");
 
   movieDetailsEl.appendChild(languagesEl);
+}
+
+function renderCinematicTeam() {
+  const directors = movie.directors.map((director) => director.fullName) || [];
+  const writers = movie.writers.map((writer) => writer.fullName) || [];
+  const cast = movie.cast || [];
+
+  const cinematicTeamEl = document.createElement("div");
+  const directorsWritersEl = document.createElement("div");
+  const castEl = document.createElement("ul");
+  const castLabelEl = document.createElement("h3");
+  const direcotrsEl = ulWithHeader(directors, "Directors", "directors", "directorsHeader", "directorsList", "director");
+  const writersEl = ulWithHeader(writers, "Writers", "writers", "writersHeader", "writersList", "writer");
+
+  cinematicTeamEl.setAttribute("class", "cinematicTeam");
+  directorsWritersEl.setAttribute("class", "directorsWriters");
+  castLabelEl.setAttribute("class", "castLabel");
+  castEl.setAttribute("class", "cast");
+
+  castLabelEl.innerText = "Cast";
+
+  cast.forEach((contributor) => {
+    const contributorName = contributor.fullName;
+    const contributorJob = contributor.job.replace("_", " ") || "";
+    const contributorCharacters = contributor.characters || [];
+
+    const contributorItemEl = document.createElement("li");
+    const contributorNameEl = document.createElement("h3");
+    const contributorJobEl = document.createElement("h4");
+    const contributorCharactersLabelEl = document.createElement("p");
+    const contributorCharactersEl = document.createElement("ul");
+
+    contributorItemEl.setAttribute("class", "contributor");
+    contributorNameEl.setAttribute("class", "contributorName");
+    contributorJobEl.setAttribute("class", "contributorJob");
+    contributorCharactersLabelEl.setAttribute("class", "contributorCharactersLabel");
+    contributorCharactersEl.setAttribute("class", "contributorCharacters");
+
+    contributorNameEl.innerText = contributorName;
+    contributorJobEl.innerText = contributorJob;
+    contributorCharactersLabelEl.innerText = "Characters";
+
+    contributorCharacters.forEach((character) => {
+      const characterItemEl = document.createElement("li");
+      characterItemEl.setAttribute("class", "character");
+      characterItemEl.innerText = character;
+      contributorCharactersEl.appendChild(characterItemEl);
+    });
+
+    contributorItemEl.appendChild(contributorNameEl);
+    contributorItemEl.appendChild(contributorJobEl);
+    if (contributorCharacters.length > 0) {
+      contributorItemEl.appendChild(contributorCharactersLabelEl);
+    }
+    contributorItemEl.appendChild(contributorCharactersEl);
+
+    castEl.appendChild(contributorItemEl);
+  });
+
+  directorsWritersEl.append(direcotrsEl, writersEl);
+  cinematicTeamEl.append(directorsWritersEl, castLabelEl, castEl);
+
+  movieDetailsEl.appendChild(cinematicTeamEl);
 }

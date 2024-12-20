@@ -109,3 +109,26 @@ export function populateUl(parent, data, itemClass) {
     parent.appendChild(li);
   });
 }
+
+export function ulWithHeader(data, headerText, containerClass, headerClass, listClass, itemClass) {
+  const container = document.createElement("div");
+  const header = document.createElement("h2");
+  const ul = document.createElement("ul");
+
+  container.setAttribute("class", containerClass);
+  header.setAttribute("class", headerClass);
+  ul.setAttribute("class", listClass);
+
+  header.innerText = headerText;
+
+  data.forEach((item) => {
+    const li = document.createElement("li");
+    li.setAttribute("class", itemClass);
+    li.innerText = item;
+    ul.appendChild(li);
+  });
+
+  container.append(header, ul);
+
+  return container;
+}

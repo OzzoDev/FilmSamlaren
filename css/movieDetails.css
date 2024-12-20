@@ -15,6 +15,12 @@ main {
       width: 100%;
       display: flex;
       justify-content: space-between;
+
+      .addToWatchList {
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
 
     .yearDuration {
@@ -99,6 +105,87 @@ main {
         font-size: clamp(0.9rem, 2vw, 1.4rem);
       }
     }
+
+    .cinematicTeam {
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      border-radius: 50px;
+      border: 1px solid var(--color-primary-a50);
+
+      .directorsWriters {
+        width: 100%;
+        padding-bottom: 20px;
+        display: flex;
+        justify-content: space-evenly;
+        border-bottom: 1px solid var(--color-surface-a20);
+
+        .directors,
+        .writers {
+          .directorsList,
+          .writersList {
+            margin-top: 7px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+          }
+        }
+      }
+
+      .castLabel {
+        font-size: 1.4rem;
+        margin-bottom: 30px;
+        color: var(--color-surface-a50);
+      }
+
+      .cast {
+        width: 100%;
+        /* height: 100%; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        list-style: none;
+
+        .contributor {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 7px;
+
+          .contributorName {
+            font-size: 1.1rem;
+            font-weight: 500;
+          }
+
+          .contributorJob {
+            font-size: 0.9rem;
+            font-weight: 400;
+          }
+
+          .contributorCharactersLabel {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--color-surface-mixed-a40);
+          }
+
+          .contributorCharacters {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+
+            .character {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -109,6 +196,14 @@ main {
   }
 }
 
+@media (min-width: 600px) {
+  .cast {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 70px;
+  }
+}
+
 @media (min-width: 768px) {
   .cinematicAtlas {
     display: grid !important;
@@ -116,5 +211,21 @@ main {
     column-gap: 70px;
     row-gap: 70px !important;
     align-items: stretch !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cast {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 70px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .cast {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 70px;
   }
 }

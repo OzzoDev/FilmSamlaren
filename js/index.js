@@ -254,14 +254,16 @@ function populateSortOptions() {
 }
 
 function renderMovies() {
-  movieCardContainer.innerHTML = "";
   visibleMovies = Math.min(movies.length, 50);
 
-  for (let i = 0; i < visibleMovies; i++) {
-    const movie = movies[i];
+  if (visibleMovies > 0) {
+    movieCardContainer.innerHTML = "";
+    for (let i = 0; i < visibleMovies; i++) {
+      const movie = movies[i];
 
-    const movieCard = new MovieCard(movie).card();
-    movieCardContainer.appendChild(movieCard);
+      const movieCard = new MovieCard(movie).card();
+      movieCardContainer.appendChild(movieCard);
+    }
   }
 }
 

@@ -88,6 +88,9 @@ export class ApiClientOmdb {
           case 409:
             renderErrorMessage(actionContainer, "409 Conflict: The request could not be completed due to a conflict with the current state of the resource.");
             break;
+          case 429:
+            renderErrorMessage(actionContainer, "429 Too many request: You have exceeded the quota for the maxium number of api calls today.");
+            break;
           case 500:
             renderErrorMessage(actionContainer, "500 Internal Server Error: The server encountered a situation it doesn’t know how to handle.");
             break;

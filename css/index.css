@@ -261,6 +261,7 @@
   align-items: start;
   gap: 20px;
   overflow-y: auto;
+  position: relative;
 }
 
 @keyframes fadeIn {

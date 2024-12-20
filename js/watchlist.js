@@ -21,8 +21,8 @@ function init() {
 }
 
 async function loadWatchList() {
-  const moviePromises = [...watchlist].map((id) => {
-    return new ApiClientImdb(watchlist, `${IMDB_URL}/${id}`).cachedData();
+  const moviePromises = [...watchlist].map((watch) => {
+    return new ApiClientImdb(watchlistEl, `${IMDB_URL}/${watch.id}`).cachedData();
   });
 
   const movieData = await Promise.allSettled(moviePromises);
@@ -43,9 +43,34 @@ async function loadWatchList() {
 function renderWatchList() {
   watchlistEl.innerHTML = "";
   if (movies) {
-    movies.forEach((moive) => {
-      const movieCard = new MovieCard(moive).card();
-      watchlistEl.appendChild(movieCard);
+    movies.forEach((movie) => {
+      const title = movie.primaryTitle;
+      const id = movie.id;
+      const date = watchlist.find((watch) => watch.id === id).addedAt || "";
+      const removeMovie = () => {
+        watchlist = watchlist.filter((watch) => watch.id !== id);
+        save(WATCHLIST_LSK, watchlist);
+        loadWatchList();
+      };
+
+      const watchEl = document.createElement("li");
+      const controlsEl = document.createElement("div");
+      const dateEl = document.createElement("p");
+      const removeBtn = iconBtn("trash", `Remove ${title} from watchlist`, removeMovie);
+      const movieCard = new MovieCard(movie).card();
+
+      watchEl.setAttribute("class", "watch");
+      controlsEl.setAttribute("class", "controls");
+      dateEl.setAttribute("class", "date");
+      removeBtn.classList.add("removeBtn");
+
+      dateEl.innerText = date;
+
+      controlsEl.append(removeBtn, dateEl);
+
+      watchEl.append(controlsEl, movieCard);
+
+      watchlistEl.appendChild(watchEl);
     });
   }
 }

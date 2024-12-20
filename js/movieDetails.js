@@ -1,5 +1,5 @@
 /*Js for movieDetails page*/
-import { load, save, formatMinutes, formatLargeNumber } from "./utilities/utility.js";
+import { load, save, formatMinutes, formatLargeNumber, formatDate } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK, WATCHLIST_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
@@ -55,10 +55,10 @@ function toggleMovieInWatchList() {
   let watchlist = load(WATCHLIST_LSK) || [];
 
   if (movieIsInWatchlist()) {
-    watchlist = watchlist.filter((movie) => movie !== id);
+    watchlist = watchlist.filter((movie) => movie.id !== id);
     setIcon(toggleIcon, "plus", `Add ${title} to watchlist`);
   } else {
-    watchlist = [...watchlist, id];
+    watchlist = [...watchlist, { id, addedAt: formatDate(new Date()) }];
     setIcon(toggleIcon, "trash", `Remove ${title} to watchlist`);
   }
 

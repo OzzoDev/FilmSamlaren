@@ -117,8 +117,6 @@ async function getMoviesByGenre(genre) {
       }
     });
 
-    // console.log("Action movies: ", movies);
-
     const highLowRatingOption = sortOptions.children[2];
     setSortOrder(highLowRatingOption);
 

@@ -1,1 +1,45 @@
 /*Watchlist css rules*/
+
+main {
+  .watchlist {
+    width: 100%;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    list-style: none;
+    .watch {
+      .controls {
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+
+        .icon {
+          width: 20px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .watchlist {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 50px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .watchlist {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .watchlist {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -144,6 +144,19 @@ export function formatMinutes(minutes) {
   return formatted.trim();
 }
 
+export function formatDate(date) {
+  const padZero = (num) => String(num).padStart(2, "0");
+
+  const year = date.getFullYear();
+  const month = padZero(date.getMonth() + 1);
+  const day = padZero(date.getDate());
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  const seconds = padZero(date.getSeconds());
+
+  return `${year}/${month}/${day} - ${hours}:${minutes}:${seconds}`;
+}
+
 export function redirect(path) {
   window.location.href = path;
 }

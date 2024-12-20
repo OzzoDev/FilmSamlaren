@@ -22,12 +22,9 @@ async function loadMovieDetails() {
   const selectedMovie = load(MOVIEDETAILS_LSK);
 
   if (selectedMovie) {
-    console.log("MovieID: ", selectedMovie);
     const movieDetails = await new ApiClientImdb(movieDetailsEl, `${IMDB_URL}/${selectedMovie}`).cachedData();
 
     movie = movieDetails;
-
-    console.log("Movie details: ", movieDetails);
 
     renderMovieDetails();
     toggleWatchListIcon();
@@ -68,7 +65,7 @@ function toggleMovieInWatchList() {
 function movieIsInWatchlist() {
   const id = movie.id;
   const watchlist = load(WATCHLIST_LSK) || [];
-  const isTracked = watchlist.includes(id);
+  const isTracked = watchlist.map((watch) => watch.id).includes(id);
   return isTracked;
 }
 

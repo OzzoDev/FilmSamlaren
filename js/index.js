@@ -1,13 +1,14 @@
 /*Javascript for index/start page only*/
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { ApiClientOmdb } from "./classes/ApiClientOmdb.js";
+import { IMDB_URL } from "./utilities/endpoints.js";
+import { BASE_TTL } from "./utilities/ttl.js";
+import { MOVIESBYGENRES_LSK } from "./utilities/keys.js";
+import { cacheData } from "./utilities/utility.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { useScrollEvent, useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
 import { sortAz } from "./utilities/utility.js";
-import { BASE_TTL } from "./utilities/ttl.js";
-import { cacheData } from "./utilities/utility.js";
-import { MOVIESBYGENRES_LSK } from "./utilities/keys.js";
-import { IMDB_URL } from "./utilities/endpoints.js";
+import { setInnerText } from "./utilities/render.js";
 
 const movieCardContainer = document.getElementById("movieCardContainer");
 const showGenresBtn = document.getElementById("categoriesBtn");
@@ -16,6 +17,7 @@ const genreContainer = document.getElementById("genresContainer");
 const genreList = document.getElementById("genres");
 const searchInput = document.getElementById("searchInput");
 const sortOptions = document.getElementById("sortOptions");
+const filterMessage = document.getElementById("filterMessage");
 
 const apiClientTopMovies = new ApiClientImdb(movieCardContainer, "Top 250");
 const apiClientGenres = new ApiClientImdb(movieCardContainer, "genres");
@@ -33,22 +35,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function init() {
   getData();
-  // getSearchedMovies();
   populateSortOptions();
   useClickEvent(showGenresBtn, showGenres);
   useClickEvent(hideGenresBtn, hideGenres);
   useClickEvents(sortOptions.children, setSortOrder);
   useScrollEvent(movieCardContainer, appendMovies);
   useInputEvent(searchInput, searchMovies);
-}
-
-async function getSearchedMovies(query) {
-  const promises = [new ApiClientOmdb(movieCardContainer).searchMovies(query, 1)];
-
-  const data = await Promise.all(promises);
-  // console.log("Data from omdb", data);
-
-  return data;
 }
 
 async function getData() {
@@ -152,6 +144,8 @@ async function searchMovies() {
   const searchQuery = searchInput.value.trim().toLowerCase();
 
   if (searchQuery.length > 4) {
+    setInnerText(filterMessage, `Searching movies by name of ${searchQuery}...`, "filterMessage success");
+
     const searchedMovies = await new ApiClientOmdb(movieCardContainer).searchMovies(searchQuery, 1);
 
     movies = [];
@@ -162,9 +156,20 @@ async function searchMovies() {
         movies.push(movie);
       }
     });
+
+    if (movies.length === 0) {
+      setInnerText(filterMessage, `No movies found by name of ${searchQuery}`, "filterMessage error");
+    } else {
+      setInnerText(filterMessage, `Found ${movies.length} movies by name of ${searchQuery}`, "filterMessage success");
+    }
   } else {
     const top250 = await apiClientTopMovies.cachedData();
     movies = top250;
+
+    setInnerText(filterMessage, "Search query must be at least 5 characters", "filterMessage error");
+    if (searchQuery.length === 0) {
+      setInnerText(filterMessage, "", "filterMessage");
+    }
   }
   renderMovies();
 }
@@ -177,7 +182,7 @@ function setSortOrder(option) {
   selectedSortOrder = option.value;
   sortMovies(selectedSortOrder);
 
-  searchMovies();
+  renderMovies();
 }
 
 function sortMovies() {
@@ -189,20 +194,16 @@ function sortMovies() {
 function sortBy(a, b) {
   switch (selectedSortOrder) {
     case 0:
-      return a.title.localeCompare(b.title);
-    case 1:
-      return b.title.localeCompare(a.title);
-    case 2:
       return b.averageRating - a.averageRating;
-    case 3:
+    case 1:
       return a.averageRating - b.averageRating;
-    case 4:
+    case 2:
       return b.startYear - a.startYear;
-    case 5:
+    case 3:
       return a.startYear - b.startYear;
-    case 6:
+    case 4:
       return b.runtimeMinutes - a.runtimeMinutes;
-    case 7:
+    case 5:
       return a.runtimeMinutes - b.runtimeMinutes;
     default:
       return 0;
@@ -233,7 +234,7 @@ function populateGenres() {
 }
 
 function populateSortOptions() {
-  const options = ["A- Z", "Z - A", "High - Low Rating", "Low - High Rating", "New - Old", "Old - New", "High - Low Duration", "Low - High Duration"];
+  const options = ["High - Low Rating", "Low - High Rating", "New - Old", "Old - New", "High - Low Duration", "Low - High Duration"];
 
   options.forEach((opt, index) => {
     const animationDelay = index * 0.1;

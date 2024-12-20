@@ -194,6 +194,15 @@
       }
     }
   }
+
+  .filterMessage {
+    font-size: 1.2rem;
+    position: absolute;
+    bottom: -85px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+  }
 }
 
 .genresContainer {
@@ -245,10 +254,12 @@
 .movieCardContainer {
   height: 100vh;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 30px;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(auto-fill, 540px);
+  justify-items: center;
+  align-items: start;
+  gap: 20px;
   overflow-y: auto;
 }
 
@@ -258,6 +269,24 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .movieCardContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .movieCardContainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .movieCardContainer {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 

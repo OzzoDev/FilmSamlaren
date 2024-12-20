@@ -312,6 +312,14 @@ input {
   display: none;
 }
 
+.error {
+  color: var(--color-error);
+}
+
+.success {
+  color: var(--color-success);
+}
+
 @media (min-width: 768px) {
   .nav-icon {
     display: none !important;

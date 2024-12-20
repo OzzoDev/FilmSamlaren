@@ -77,3 +77,8 @@ export function iconValue(value, src, altAndTitle, dir) {
 
   return iconContainer;
 }
+
+export function setInnerText(element, text, classes) {
+  element.setAttribute("class", classes);
+  element.innerText = text;
+}

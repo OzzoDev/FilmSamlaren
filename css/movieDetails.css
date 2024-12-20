@@ -66,8 +66,13 @@ main {
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-wrap: wrap;
         gap: 12px;
         position: relative;
+
+        .dataItem {
+          white-space: nowrap;
+        }
 
         &::after {
           content: attr(data-title);
@@ -88,6 +93,11 @@ main {
           right: -22px;
         }
       }
+    }
+
+    .countries,
+    .locations {
+      flex-direction: column;
     }
 
     .desc {

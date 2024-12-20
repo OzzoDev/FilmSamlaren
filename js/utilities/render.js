@@ -1,5 +1,6 @@
 /*Common render function for all pages*/
 import { formatLargeNumber } from "./utility.js";
+import { useClickEvent } from "./events.js";
 
 export function renderSpinner(parent) {
   const spinner = document.createElement("div");
@@ -76,6 +77,23 @@ export function iconValue(value, src, altAndTitle, dir) {
   }
 
   return iconContainer;
+}
+
+export function iconBtn(src, altTitle, callback) {
+  const icon = document.createElement("img");
+
+  const fullSrc = `../../res/icons/${src}.svg`;
+
+  icon.setAttribute("class", "icon icon-scale");
+  icon.setAttribute("src", fullSrc);
+  icon.setAttribute("alt", altTitle);
+  icon.setAttribute("title", altTitle);
+  icon.setAttribute("role", "button");
+  icon.setAttribute("tabIndex", 0);
+
+  useClickEvent(icon, callback);
+
+  return icon;
 }
 
 export function setInnerText(element, text, classes) {

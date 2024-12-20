@@ -1,0 +1,20 @@
+/*Css for movieDetails page*/
+
+main {
+  width: 100%;
+
+  .movieDetails {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+
+    .heading {
+      width: 100%;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}

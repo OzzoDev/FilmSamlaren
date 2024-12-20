@@ -1,5 +1,6 @@
+import { redirect, save } from "../utilities/utility.js";
+import { MOVIEDETAILS_LSK } from "../utilities/key.js";
 import { iconValue } from "../utilities/render.js";
-import { isValidImage } from "../utilities/utility.js";
 
 export class MovieCard {
   constructor(movie) {
@@ -9,6 +10,7 @@ export class MovieCard {
   card() {
     const movie = this.movie;
 
+    const id = movie.id;
     const title = movie.title || movie.primaryTitle;
     const rating = movie.averageRating || 0;
     const posterSrc = movie.primaryImage || movie.Poster || "../../res/images/moviePosterPlaceholder.jpg";
@@ -32,9 +34,20 @@ export class MovieCard {
       actualPoster.src = "../../res/images/moviePosterPlaceholder.jpg";
     }
 
+    movieCard.addEventListener("click", () => {
+      this.movieDetails(id);
+    });
+
     movieCard.setAttribute("class", "movieCard");
     movieCard.append(poster, ratingIcon);
 
     return movieCard;
+  }
+
+  movieDetails(id) {
+    save(MOVIEDETAILS_LSK, id);
+    setTimeout(() => {
+      redirect("movieDetails.html");
+    }, 100);
   }
 }

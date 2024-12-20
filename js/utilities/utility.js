@@ -128,3 +128,7 @@ export function isValidImage(url) {
     img.src = url;
   });
 }
+
+export function redirect(path) {
+  window.location.href = path;
+}

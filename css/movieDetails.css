@@ -5,6 +5,7 @@ main {
 
   .movieDetails {
     width: 100%;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,7 +13,6 @@ main {
 
     .heading {
       width: 100%;
-      padding: 10px;
       display: flex;
       justify-content: space-between;
     }
@@ -31,6 +31,10 @@ main {
       .duration {
         font-size: 1.4rem;
       }
+    }
+
+    .poster {
+      width: min(100%, 1000px);
     }
   }
 }

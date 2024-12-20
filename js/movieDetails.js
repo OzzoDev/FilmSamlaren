@@ -35,6 +35,7 @@ async function getMovieDetails() {
 function renderMovieDetails() {
   renderHeading(movieDetailsEl);
   renderYearDuration(movieDetailsEl);
+  renderPoster(movieDetailsEl);
 }
 
 function renderHeading(parent) {
@@ -76,4 +77,28 @@ function renderYearDuration(parent) {
   yearDurationEl.append(yearEl, durationEl);
 
   parent.appendChild(yearDurationEl);
+}
+
+function renderPoster(parent) {
+  const posterSrc = movie.primaryImage;
+  const title = movie.primaryTitle;
+
+  const posterEl = document.createElement("img");
+
+  posterEl.setAttribute("class", "poster");
+  posterEl.setAttribute("src", "../../res/images/moviePosterPlaceholder.jpg");
+  posterEl.setAttribute("alt", title);
+
+  const loadingPoster = new Image();
+
+  if (posterSrc && typeof posterSrc === "string" && posterSrc.startsWith("http")) {
+    loadingPoster.setAttribute("src", posterSrc);
+    loadingPoster.onload = () => {
+      posterEl.setAttribute("src", posterSrc);
+    };
+  } else {
+    loadingPoster.setAttribute("class", posterSrc);
+  }
+
+  parent.appendChild(posterEl);
 }

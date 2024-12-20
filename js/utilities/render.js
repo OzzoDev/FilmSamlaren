@@ -132,3 +132,20 @@ export function ulWithHeader(data, headerText, containerClass, headerClass, list
 
   return container;
 }
+
+export function valueWithHeader(value, headerText, containerClass, headerClass, valueClass) {
+  const container = document.createElement("div");
+  const header = document.createElement("h2");
+  const text = document.createElement("p");
+
+  container.setAttribute("class", containerClass);
+  header.setAttribute("class", headerClass);
+  text.setAttribute("class", valueClass);
+
+  header.innerText = headerText;
+  text.innerText = value;
+
+  container.append(header, text);
+
+  return container;
+}

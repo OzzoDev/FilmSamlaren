@@ -1,9 +1,9 @@
 /*Js for movieDetails page*/
-import { load, formatMinutes } from "./utilities/utility.js";
+import { load, formatMinutes, formatLargeNumber } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
-import { iconBtn, iconValue, populateUl, ulWithHeader } from "./utilities/render.js";
+import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader } from "./utilities/render.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
 
@@ -40,6 +40,7 @@ function renderMovieDetails() {
   renderDesc();
   renderLanguages();
   renderCinematicTeam();
+  renderFinancials();
 }
 
 function renderHeading() {
@@ -222,4 +223,19 @@ function renderCinematicTeam() {
   cinematicTeamEl.append(directorsWritersEl, castLabelEl, castEl);
 
   movieDetailsEl.appendChild(cinematicTeamEl);
+}
+
+function renderFinancials() {
+  const budget = formatLargeNumber(movie.budget || "");
+  const revenue = formatLargeNumber(movie.grossWorldwide || "");
+
+  const financialsEl = document.createElement("div");
+  const budgetEl = valueWithHeader(budget, "Budget", "budget", "budgetHeader", "budgetText");
+  const revenueEl = valueWithHeader(revenue, "Revenue", "revenue", "revenueHeader", "revenueText");
+
+  financialsEl.setAttribute("class", "financials");
+
+  financialsEl.append(budgetEl, revenueEl);
+
+  movieDetailsEl.appendChild(financialsEl);
 }

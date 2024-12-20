@@ -238,9 +238,10 @@ input {
 /*Icon container*/
 
 .iconContainer {
+  height: fit-content;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
 
   img {

@@ -33,6 +33,7 @@ async function getMovieDetails() {
 }
 
 function renderMovieDetails() {
+  movieDetailsEl.innerHTML = "";
   renderHeading();
   renderYearDuration();
   renderPoster();
@@ -51,7 +52,7 @@ function renderHeading() {
   const headingEl = document.createElement("div");
   const addToWatchListEl = iconBtn("plus", `Add ${title} to watchlist`);
   const titleEl = document.createElement("h1");
-  const ratingIconEl = iconValue(rating, "ribbon", `${title} has an rating of ${rating}`, "right");
+  const ratingIconEl = iconValue(rating, "ribbon", `${title} has an imdb rating of ${rating}`, "right");
 
   headingEl.setAttribute("class", "heading");
   addToWatchListEl.classList.add("addToWatchList");

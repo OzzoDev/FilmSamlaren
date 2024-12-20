@@ -17,7 +17,7 @@ export class MovieCard {
 
     const movieCard = document.createElement("div");
     const poster = document.createElement("img");
-    const ratingIcon = iconValue(rating, "ribbon", `${title} has an rating of ${rating}`, "right");
+    const ratingIcon = iconValue(rating, "ribbon", `${title} has an imdb rating of ${rating}`, "right");
 
     poster.setAttribute("src", "../../res/images/moviePosterPlaceholder.jpg");
     poster.setAttribute("class", "poster");

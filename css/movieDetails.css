@@ -17,8 +17,15 @@ main {
       justify-content: space-between;
 
       .addToWatchList {
+        height: fit-content;
         &:hover {
           cursor: pointer;
+        }
+      }
+
+      .rating {
+        p {
+          font-size: 1.4rem;
         }
       }
     }

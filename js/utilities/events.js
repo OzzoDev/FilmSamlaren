@@ -1,6 +1,8 @@
 export function useClickEvent(element, callback) {
   element.addEventListener("click", () => {
-    callback();
+    if (typeof callback === "function") {
+      callback();
+    }
   });
 }
 

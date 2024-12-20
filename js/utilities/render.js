@@ -101,6 +101,12 @@ export function setInnerText(element, text, classes) {
   element.innerText = text;
 }
 
+export function setIcon(icon, src, altTitle) {
+  icon.setAttribute("src", `../../res/icons/${src}.svg`);
+  icon.setAttribute("alt", altTitle);
+  icon.setAttribute("title", altTitle);
+}
+
 export function populateUl(parent, data, itemClass) {
   data.forEach((item) => {
     const li = document.createElement("li");

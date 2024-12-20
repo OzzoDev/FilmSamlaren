@@ -1,9 +1,10 @@
 /*Js for movieDetails page*/
-import { load, formatMinutes, formatLargeNumber } from "./utilities/utility.js";
-import { MOVIEDETAILS_LSK } from "./utilities/key.js";
+import { load, save, formatMinutes, formatLargeNumber } from "./utilities/utility.js";
+import { MOVIEDETAILS_LSK, WATCHLIST_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
-import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader, iconLink } from "./utilities/render.js";
+import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader, iconLink, setIcon } from "./utilities/render.js";
+import { useClickEvent } from "./utilities/events.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
 
@@ -29,7 +30,46 @@ async function getMovieDetails() {
     console.log("Movie details: ", movieDetails);
 
     renderMovieDetails();
+    toggleWatchListIcon();
   }
+}
+
+function toggleWatchListIcon() {
+  const toggleIcon = document.getElementById("watchlistToggle");
+  const title = movie.primaryTitle;
+
+  useClickEvent(toggleIcon, toggleMovieInWatchList);
+
+  if (movieIsInWatchlist()) {
+    setIcon(toggleIcon, "trash", `Remove ${title} to watchlist`);
+  } else {
+    setIcon(toggleIcon, "plus", `Add ${title} to watchlist`);
+  }
+}
+
+function toggleMovieInWatchList() {
+  const toggleIcon = document.getElementById("watchlistToggle");
+  const title = movie.primaryTitle;
+  const id = movie.id;
+
+  let watchlist = load(WATCHLIST_LSK) || [];
+
+  if (movieIsInWatchlist()) {
+    watchlist = watchlist.filter((movie) => movie !== id);
+    setIcon(toggleIcon, "plus", `Add ${title} to watchlist`);
+  } else {
+    watchlist = [...watchlist, id];
+    setIcon(toggleIcon, "trash", `Remove ${title} to watchlist`);
+  }
+
+  save(WATCHLIST_LSK, watchlist);
+}
+
+function movieIsInWatchlist() {
+  const id = movie.id;
+  const watchlist = load(WATCHLIST_LSK) || [];
+  const isTracked = watchlist.includes(id);
+  return isTracked;
 }
 
 function renderMovieDetails() {
@@ -53,6 +93,8 @@ function renderHeading() {
   const addToWatchListEl = iconBtn("plus", `Add ${title} to watchlist`);
   const titleEl = document.createElement("h1");
   const ratingIconEl = iconValue(rating, "ribbon", `${title} has an imdb rating of ${rating}`, "right");
+
+  addToWatchListEl.setAttribute("id", "watchlistToggle");
 
   headingEl.setAttribute("class", "heading");
   addToWatchListEl.classList.add("addToWatchList");

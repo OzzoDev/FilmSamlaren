@@ -76,6 +76,12 @@ main {
         }
       }
     }
+
+    .desc {
+      margin-top: 40px;
+      text-align: center;
+      font-size: clamp(1.4rem, 2vw, 2rem);
+    }
   }
 }
 

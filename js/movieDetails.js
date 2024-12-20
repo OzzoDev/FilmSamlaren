@@ -37,6 +37,7 @@ function renderMovieDetails() {
   renderYearDuration(movieDetailsEl);
   renderPoster(movieDetailsEl);
   renderCinematicAtlas(movieDetailsEl);
+  renderDesc(movieDetailsEl);
 }
 
 function renderHeading(parent) {
@@ -135,4 +136,14 @@ function renderCinematicAtlas(parent) {
   cinematicAtlasEl.append(countriesEl, genresEl, locationsEl, interestsEl);
 
   parent.appendChild(cinematicAtlasEl);
+}
+
+function renderDesc(parent) {
+  const desc = movie.description;
+  const descEl = document.createElement("p");
+
+  descEl.setAttribute("class", "desc");
+  descEl.innerText = desc;
+
+  parent.appendChild(descEl);
 }

@@ -15,10 +15,10 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function init() {
-  getMovieDetails();
+  loadMovieDetails();
 }
 
-async function getMovieDetails() {
+async function loadMovieDetails() {
   const selectedMovie = load(MOVIEDETAILS_LSK);
 
   if (selectedMovie) {

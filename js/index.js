@@ -1,6 +1,7 @@
 /*Javascript for index/start page only*/
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { ApiClientOmdb } from "./classes/ApiClientOmdb.js";
+import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
 import { BASE_TTL } from "./utilities/ttl.js";
 import { MOVIESBYGENRES_LSK } from "./utilities/keys.js";
@@ -20,11 +21,14 @@ const sortOptions = document.getElementById("sortOptions");
 const filterMessage = document.getElementById("filterMessage");
 
 const apiClientTopMovies = new ApiClientImdb(movieCardContainer, "Top 250");
-const apiClientGenres = new ApiClientImdb(movieCardContainer, "genres");
+// const apiClientGenres = new ApiClientImdb(movieCardContainer, "genres");
+const apiClientGenres = new ApiClientTmdb(movieCardContainer, "genres");
 
 let visibleMovies = 50;
 let movies = [];
 let genres = [];
+let genreNames = [];
+// let genreIDs = [];
 let moviesByGenres = [];
 let selectedSortOrder = 0;
 let selectGenre;
@@ -44,51 +48,18 @@ function init() {
 }
 
 async function getData() {
-  const promises = [apiClientTopMovies.cachedData(), apiClientGenres.cachedData()];
+  const promises = [apiClientTopMovies.cachedData(), apiClientGenres.getGenres()];
 
   const response = await Promise.all(promises);
 
   movies = response[0];
-  genres = sortAz(response[1]);
+  genres = response[1].genres;
+  genreNames = sortAz(response[1].genres.map((genre) => genre.name));
 
-  genres.unshift("Top 250");
+  genreNames.unshift("Top 250");
 
   renderMovies();
   populateGenres();
-
-  searchAllGenres();
-}
-
-async function searchAllGenres() {
-  const genreSearchPromises = [];
-  let moviesByAllGenres = [];
-
-  genres.forEach((genre, index) => {
-    if (index > 0) {
-      genreSearchPromises.push(new ApiClientImdb(undefined, "searchByGenre", `&genre=${genre}`, MOVIESBYGENRES_LSK).losseData());
-    }
-  });
-
-  const response = await Promise.all(genreSearchPromises);
-
-  const fetchableGenres = [...genres].slice(1);
-  const isFetchedData = response.every((res) => res.results);
-
-  if (isFetchedData) {
-    response.forEach((data, index) => {
-      if (data.results) {
-        const movieIDs = data.results.map((movie) => ({ id: movie.id }));
-        moviesByAllGenres.push({ movies: movieIDs, genre: fetchableGenres[index] });
-      } else {
-        moviesByAllGenres.push({ movies: data, genre: fetchableGenres[index] });
-      }
-    });
-    cacheData(MOVIESBYGENRES_LSK, moviesByAllGenres, BASE_TTL);
-  } else {
-    moviesByAllGenres = response[0];
-  }
-  moviesByGenres = moviesByAllGenres;
-  console.log("All genres movies: ", moviesByGenres);
 }
 
 async function getMoviesByGenre(genre) {
@@ -97,30 +68,67 @@ async function getMoviesByGenre(genre) {
     movies = top250;
     renderMovies();
   } else {
-    const selectedMoviesByGenre = moviesByGenres.find((movie) => movie.genre === genre);
+    const genreId = genres.find((gen) => gen.name === genre).id;
+    const moviesDataByGenre = await apiClientGenres.getMoviesByGenre(genreId);
+    const moviesByGenre = moviesDataByGenre.results;
+    const requestedProperties = moviesByGenre.map((movieObj) => ({ originalTitle: movieObj.original_title, primaryTitle: movieObj.original_title, startYearTo: parseInt(movieObj.release_date) }));
 
-    console.log("sel", selectedMoviesByGenre.movies);
-
-    const moviePromises = selectedMoviesByGenre.movies.map((movie) => {
-      if (movie && movie.id) {
-        return new ApiClientImdb(movieCardContainer, `${IMDB_URL}/${movie.id}`).cachedData();
-      }
-    });
-    const moviesByGenre = await Promise.all(moviePromises);
-
-    movies = [];
-
-    moviesByGenre.forEach((movie) => {
-      const isDefined = movie.primaryImage && typeof movie.primaryImage === "string" && movie.primaryImage.startsWith("http");
-      if (isDefined) {
-        movies.push(movie);
-      }
+    const imdbMovieIDsPromises = requestedProperties.map((property) => {
+      const originalTitle = property.originalTitle;
+      const primaryTitle = property.primaryTitle;
+      const startYearTo = property.startYearTo;
+      const params = `search?originalTitle=${encodeURIComponent(originalTitle)}&primaryTitle=${encodeURIComponent(primaryTitle)}&type=movie&startYearTo=${startYearTo}`;
+      return new ApiClientImdb(movieCardContainer, `${IMDB_URL}/${params}`).cachedData();
     });
 
-    const highLowRatingOption = sortOptions.children[2];
+    const imdbMovieIDs = await Promise.allSettled(imdbMovieIDsPromises);
+
+    const imdbIDs = imdbMovieIDs
+      .map((result) => {
+        if (result.status === "fulfilled") {
+          return result.value;
+        } else {
+          return null;
+        }
+      })
+      .filter((result) => result !== null)
+      .map((result) => (result.results[0] ? result.results[0].id : null))
+      .filter((id) => id !== null);
+
+    const imdbMovieDataPromises = imdbIDs.map((id) => {
+      return new ApiClientImdb(movieCardContainer, `${IMDB_URL}/${id}`).cachedData();
+    });
+
+    const imdbMoiveData = await Promise.allSettled(imdbMovieDataPromises);
+
+    const imdbMovies = imdbMoiveData
+      .map((result) => {
+        if (result.status === "fulfilled") {
+          return result.value;
+        } else {
+          return null;
+        }
+      })
+      .filter((result) => result !== null)
+      .filter((movie) => {
+        const posterSrc = movie.primaryImage;
+        const rating = movie.averageRating;
+        return posterSrc && typeof posterSrc === "string" && posterSrc.startsWith("http") && rating && rating >= 4;
+      });
+
+    movies = Object.values(
+      imdbMovies.reduce((acc, movie) => {
+        acc[movie.primaryTitle] = movie;
+        return acc;
+      }, {})
+    );
+
+    const highLowRatingOption = sortOptions.children[0];
     setSortOrder(highLowRatingOption);
 
-    renderMovies();
+    console.log(`${genre} Movies: `, movies);
+
+    // renderMovies();
   }
 }
 
@@ -178,6 +186,9 @@ function setSortOrder(option) {
   option.classList.add("selected");
 
   selectedSortOrder = option.value;
+
+  console.log("Sort Order: ", selectedSortOrder);
+
   sortMovies(selectedSortOrder);
 
   renderMovies();
@@ -209,7 +220,7 @@ function sortBy(a, b) {
 }
 
 function populateGenres() {
-  genres.forEach((gen, index) => {
+  genreNames.forEach((gen, index) => {
     const animationDelay = index * 0.04;
     const genre = document.createElement("li");
     const genreText = document.createElement("p");

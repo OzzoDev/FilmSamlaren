@@ -221,7 +221,6 @@ function populateGenres() {
     genre.style.animationDelay = `${animationDelay}s`;
 
     genre.addEventListener("click", () => {
-      selectGenre = gen;
       hideGenres();
       getMoviesByGenre(gen);
     });

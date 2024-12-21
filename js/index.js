@@ -3,9 +3,6 @@ import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { ApiClientOmdb } from "./classes/ApiClientOmdb.js";
 import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
-import { BASE_TTL } from "./utilities/ttl.js";
-import { MOVIESBYGENRES_LSK } from "./utilities/keys.js";
-import { cacheData } from "./utilities/utility.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { useScrollEvent, useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
 import { sortAz } from "./utilities/utility.js";
@@ -21,17 +18,13 @@ const sortOptions = document.getElementById("sortOptions");
 const filterMessage = document.getElementById("filterMessage");
 
 const apiClientTopMovies = new ApiClientImdb(movieCardContainer, "Top 250");
-// const apiClientGenres = new ApiClientImdb(movieCardContainer, "genres");
 const apiClientGenres = new ApiClientTmdb(movieCardContainer, "genres");
 
 let visibleMovies = 50;
 let movies = [];
 let genres = [];
 let genreNames = [];
-// let genreIDs = [];
-let moviesByGenres = [];
 let selectedSortOrder = 0;
-let selectGenre;
 
 window.addEventListener("DOMContentLoaded", () => {
   init();
@@ -125,10 +118,6 @@ async function getMoviesByGenre(genre) {
 
     const highLowRatingOption = sortOptions.children[0];
     setSortOrder(highLowRatingOption);
-
-    console.log(`${genre} Movies: `, movies);
-
-    // renderMovies();
   }
 }
 

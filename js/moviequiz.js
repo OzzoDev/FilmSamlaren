@@ -129,19 +129,31 @@ async function generateMovies() {
 
       movies = imdbMovies;
 
-      renderGenreBtns();
-      renderSeasonBtns();
-      renderThemeBtns();
+      resetBtns();
       renderMovies();
+
+      if (movies.length === 0) {
+        noMoviesFound();
+      }
     }
   } catch (error) {
     console.error(error);
   }
 }
 
-function renderGenreBtns() {
-  genreContainer.innerHTML = "";
+function noMoviesFound() {
+  moiveContainer.innerHTML = "";
+  const message = document.createElement("p");
+  message.setAttribute("class", "error");
+  message.innerHTML = "No movies found, please try again";
+}
 
+function resetBtns() {
+  const btns = document.getElementsByClassName("btn");
+  Array.from(btns).forEach((btn) => btn.classList.remove("selected-btn"));
+}
+
+function renderGenreBtns() {
   const spinner = document.getElementsByClassName("loader")[0];
   if (spinner) {
     spinner.remove();
@@ -157,8 +169,6 @@ function renderGenreBtns() {
 }
 
 function renderSeasonBtns() {
-  seasonContainer.innerHTML = "";
-
   const selectSeason = (season) => {
     if (!selectedCategories.seasons.includes(season)) {
       selectedCategories.seasons.push(season);
@@ -169,8 +179,6 @@ function renderSeasonBtns() {
 }
 
 function renderThemeBtns() {
-  themeContainer.innerHTML = "";
-
   const selectTheme = (interest) => {
     if (!selectedCategories.themes.includes(interest)) {
       selectedCategories.themes.push(interest);

@@ -96,7 +96,7 @@ body {
             align-items: center;
 
             p {
-              color: var(--color-surface-a50);
+              color: var(--color-primary-text);
             }
           }
         }

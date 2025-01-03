@@ -153,10 +153,18 @@ async function searchMovies() {
     });
 
     if (movies.length === 0) {
+      const top250 = await apiClientTopMovies.cachedData();
+      movies = top250;
+
       setInnerText(filterMessage, `No movies found by name of ${searchQuery}`, "filterMessage error");
+
+      setTimeout(() => {
+        setInnerText(filterMessage, "", "filterMessage");
+      }, 2000);
     } else {
       setInnerText(filterMessage, `Found ${movies.length} movies by name of ${searchQuery}`, "filterMessage success");
     }
+    renderMovies();
   } else {
     const top250 = await apiClientTopMovies.cachedData();
     movies = top250;
@@ -166,7 +174,6 @@ async function searchMovies() {
       setInnerText(filterMessage, "", "filterMessage");
     }
   }
-  renderMovies();
 }
 
 function setSortOrder(option) {

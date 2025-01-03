@@ -56,7 +56,7 @@ function toggleMovieInWatchList() {
     setIcon(toggleIcon, "plus", `Add ${title} to watchlist`);
   } else {
     watchlist = [...watchlist, { id, addedAt: formatDate(new Date()) }];
-    setIcon(toggleIcon, "trash", `Remove ${title} to watchlist`);
+    setIcon(toggleIcon, "trash", `Remove ${title} from watchlist`);
   }
 
   save(WATCHLIST_LSK, watchlist);

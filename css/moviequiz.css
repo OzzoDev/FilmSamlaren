@@ -1,1 +1,17 @@
 /*Moviequiz css rules*/
+
+main {
+  .movieQuiz {
+    .genres {
+      .genreBtns {
+        .genreBtn {
+        }
+      }
+    }
+  }
+
+  .generateMovies {
+    margin-top: 100px;
+    filter: hue-rotate(180deg);
+  }
+}

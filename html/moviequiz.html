@@ -5,13 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Discover your next movie today" />
     <title>FilmSamlaren</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="../css/normalize.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/spinner.css" />
+    <link rel="stylesheet" href="../css/moviequiz.css" />
+    <script type="module" src="../js/script.js" defer></script>
+    <script type="module" src="../js/moviequiz.js" defer></script>
   </head>
   <body>
     <header>
-      <!-- header content -->
+      <a href="../html/index.html" title="Start page">
+        <img src="../res/images/logo.png" alt="Navigate to start page" class="logo" />
+      </a>
+      <nav>
+        <ul id="navUl" class="navUl">
+          <li>
+            <a href="../html/watchlist.html" title="Watchlist">
+              <img src="../res/icons/watchlist.svg" alt="Navigate to watchlist page" class="icon icon-scale" />
+              <p>Watchlist</p>
+            </a>
+          </li>
+          <li>
+            <a href="../html/moviequiz.html" title="Moviequiz">
+              <img src="../res/icons/quiz.svg" alt="Navigate to moviequiz page" class="icon icon-scale" />
+              <p>Movie quiz</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div id="menuToggle" class="icon nav-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </header>
     <main>
-      <!-- main content -->
+      <section id="movieQuiz" class="movieQuiz">
+        <div id="genres" class="genres">
+          <h2 id="genreHeader" class="genreHeader">Selected genres</h2>
+        </div>
+        <div id="seasons" class="seasons">
+          <h2 id="seasonHeader" class="seasonHeader">Selected season</h2>
+        </div>
+        <div id="interests" class="interests">
+          <h2 id="interestsHeader" class="interestsHeader">Select themes</h2>
+        </div>
+      </section>
+      <button id="generateMovies" class="generateMovies btn">Generate</button>
     </main>
     <footer>
       <p id="copyright" class="copyright">&copy;2024</p>

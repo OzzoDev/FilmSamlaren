@@ -173,3 +173,24 @@ export function iconLink(url, src, altTitle, className) {
 
   return link;
 }
+
+export function dataListAsBtns(dataList, containerClassName, btnClassName, callback) {
+  if (dataList) {
+    const container = document.createElement("div");
+    container.setAttribute("class", containerClassName);
+
+    dataList.forEach((item) => {
+      const btn = document.createElement("button");
+      btn.innerText = item;
+      btn.setAttribute("class", btnClassName);
+
+      useClickEvent(btn, () => {
+        callback(item);
+      });
+
+      container.appendChild(btn);
+    });
+    return container;
+  }
+  return document.createElement("div");
+}

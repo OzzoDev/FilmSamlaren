@@ -161,6 +161,36 @@ body {
     flex-direction: column;
     align-items: center;
   }
+
+  footer {
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-surface-a10);
+
+    .copyright {
+      font-size: 1.4rem;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+
+      .social {
+        width: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease-out;
+
+        &:hover {
+          transform: scale(1.07);
+        }
+      }
+    }
+  }
 }
 
 h1,

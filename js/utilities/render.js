@@ -185,6 +185,7 @@ export function dataListAsBtns(dataList, containerClassName, btnClassName, callb
       btn.setAttribute("class", btnClassName);
 
       useClickEvent(btn, () => {
+        btn.classList.toggle("selected-btn");
         callback(item);
       });
 

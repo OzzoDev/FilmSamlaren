@@ -2,16 +2,32 @@
 
 main {
   .movieQuiz {
-    .genres {
-      .genreBtns {
-        .genreBtn {
-        }
-      }
+    width: min(100%, 1200px);
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    .category {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
     }
   }
 
   .generateMovies {
     margin-top: 100px;
     filter: hue-rotate(180deg);
+  }
+
+  .movies {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
   }
 }

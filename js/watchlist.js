@@ -1,11 +1,10 @@
 /*Javascript for watchlist page only*/
 import { load, save } from "./utilities/utility.js";
-import { MOVIEDETAILS_LSK, WATCHLIST_LSK } from "./utilities/key.js";
+import { WATCHLIST_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
 import { MovieCard } from "./classes/MoiveCard.js";
-import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader, iconLink, setIcon } from "./utilities/render.js";
-import { useClickEvent } from "./utilities/events.js";
+import { iconBtn } from "./utilities/render.js";
 
 const main = document.body.getElementsByTagName("main")[0];
 const watchlistEl = document.getElementById("watchlist");
@@ -69,6 +68,7 @@ function renderWatchList() {
       const title = movie.primaryTitle;
       const id = movie.id;
       const date = watchlist.find((watch) => watch.id === id).addedAt || "";
+
       const removeMovie = () => {
         watchlist = watchlist.filter((watch) => watch.id !== id);
         save(WATCHLIST_LSK, watchlist);

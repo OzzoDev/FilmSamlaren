@@ -284,7 +284,7 @@ function renderFinancials() {
 function renderExternalLinks() {
   const title = movie.primaryTitle;
   const links = movie.externalLinks || [];
-  const linksEl = document.createElement("ul");
+  const linksEl = document.createElement("div");
 
   const socials = ["instagram", "facebook", "twitter", "tiktok"];
 
@@ -292,7 +292,7 @@ function renderExternalLinks() {
 
   links.forEach((link) => {
     const iconPath = socials.find((social) => link.includes(social)) || "internet";
-    const linkEl = iconLink(link, iconPath, `Visit ${title}'s ${iconPath}`, "link");
+    const linkEl = iconLink(link, iconPath, iconPath === "internet" ? `Read more about ${title}` : `Visit ${title}'s ${iconPath}`, "link");
     linksEl.appendChild(linkEl);
   });
 

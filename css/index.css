@@ -256,7 +256,6 @@ main {
 }
 
 .movieCardContainer {
-  height: 100vh;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -264,7 +263,6 @@ main {
   justify-items: center;
   align-items: start;
   gap: 20px;
-  overflow-y: auto;
   position: relative;
 }
 

@@ -6,10 +6,10 @@ import { useClickEvent } from "../utilities/events.js";
 export class MovieCard {
   constructor(movie) {
     this.id = movie.id;
-    this.title = movie.title;
-    this.rating = movie.rating;
-    this.posterSrc = movie.posterSrc || "../../res/images/moviePosterPlaceholder.jpg";
-    this.year = movie.year;
+    this.title = movie.original_title;
+    this.rating = movie.vote_average.toFixed(1);
+    this.posterSrc = `https://image.tmdb.org/t/p/w500${movie.poster_path}` || "../../res/images/moviePosterPlaceholder.jpg";
+    this.year = parseInt(movie.release_date);
   }
 
   card() {

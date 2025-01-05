@@ -26,11 +26,6 @@ main {
   }
 }
 
-.filterMessage {
-  font-size: clamp(1.7rem, 2vw, 2.5rem);
-  margin-bottom: 40px;
-}
-
 .filterContainer {
   width: min(100%, 900px);
   padding: 40px;
@@ -200,9 +195,9 @@ main {
   }
 
   .filterMessage {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     position: absolute;
-    bottom: -85px;
+    bottom: -40px;
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;

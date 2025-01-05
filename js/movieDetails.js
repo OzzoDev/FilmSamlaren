@@ -21,8 +21,6 @@ function init() {
 async function loadMovieDetails() {
   const selectedMovie = load(MOVIEDETAILS_LSK);
 
-  console.log(selectedMovie);
-
   if (selectedMovie) {
     const params = `search?originalTitle=${encodeURIComponent(selectedMovie.title)}&primaryTitle=${encodeURIComponent(selectedMovie.title)}&type=movie&startYearTo=${selectedMovie.year}`;
     const movieDetails = await new ApiClientImdb(movieDetailsEl, `${IMDB_URL}/${params}`).cachedData();

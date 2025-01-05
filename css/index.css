@@ -28,7 +28,7 @@ main {
 .filterContainer {
   width: min(100%, 900px);
   padding: 40px;
-  margin: 100px 0;
+  margin: 100px 0 20px 0;
   position: relative;
   z-index: 99;
   border-radius: 50px;
@@ -196,11 +196,15 @@ main {
   .filterMessage {
     font-size: 1.5rem;
     position: absolute;
-    bottom: -40px;
+    bottom: -130px;
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;
   }
+}
+
+.surprise {
+  margin-bottom: 100px;
 }
 
 .genresContainer {

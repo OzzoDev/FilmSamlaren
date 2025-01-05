@@ -7,6 +7,7 @@ export function renderSpinner(parent) {
 
   if (parent) {
     parent.innerHTML = "";
+    parent.classList.add("relative");
     parent.appendChild(spinner);
   }
 }

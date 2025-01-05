@@ -4,8 +4,9 @@ import { MovieCard } from "./classes/MoiveCard.js";
 import { useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
 import { filterUniqueTitles } from "./utilities/utility.js";
 import { setInnerText } from "./utilities/render.js";
+import { ApiClientClaude } from "./classes/ApiClientClaude.js";
 
-const movieCardContainer = document.getElementById("movieCardContainer");
+const movieContainer = document.getElementById("movieCardContainer");
 const showGenresBtn = document.getElementById("categoriesBtn");
 const hideGenresBtn = document.getElementById("hideGenresBtn");
 const genreContainer = document.getElementById("genresContainer");
@@ -13,8 +14,9 @@ const genreList = document.getElementById("genres");
 const searchInput = document.getElementById("searchInput");
 const sortOptions = document.getElementById("sortOptions");
 const filterMessage = document.getElementById("filterMessage");
+const supriseBtn = document.getElementById("surprise");
 
-const apiClientGenres = new ApiClientTmdb(movieCardContainer, "genres");
+const apiClientGenres = new ApiClientTmdb(movieContainer, "genres");
 
 let movies = [];
 let genres = [];
@@ -28,6 +30,7 @@ function init() {
   populateSortOptions();
   useClickEvent(showGenresBtn, showGenres);
   useClickEvent(hideGenresBtn, hideGenres);
+  useClickEvent(supriseBtn, generateMovies);
   useClickEvents(sortOptions.children, sortMoives);
   useInputEvent(searchInput, searchMovies);
 }
@@ -43,7 +46,7 @@ async function getData() {
 }
 
 async function getAllMovies() {
-  const moviesPromises = [...genres].map((genre) => new ApiClientTmdb(movieCardContainer, `${genre.name}Movies`).getMoviesByGenre(genre.id));
+  const moviesPromises = [...genres].map((genre) => new ApiClientTmdb(movieContainer, `${genre.name}Movies`).getMoviesByGenre(genre.id));
   const moviesData = await Promise.all(moviesPromises);
   movies = filterUniqueTitles(moviesData.flatMap((data) => data.results));
 }
@@ -55,6 +58,11 @@ async function getMoviesByGenre(genre) {
     const moviesDataByGenre = await apiClientGenres.getMoviesByGenre(genres.find((gen) => gen.name === genre).id);
     movies = moviesDataByGenre.results;
   }
+  renderMovies(movies);
+}
+
+async function generateMovies() {
+  movies = await new ApiClientClaude(movieContainer).generateMovies();
   renderMovies(movies);
 }
 
@@ -80,7 +88,7 @@ function searchMovies() {
 
   if (searchQuery.length > 0) {
     if (matchingMovies.length > 0) {
-      setInnerText(filterMessage, `Found ${matchingMovies.length} movies by name of ${searchQuery}`, "filterMessage success");
+      setInnerText(filterMessage, `Found ${matchingMovies.length} ${matchingMovies.length === 1 ? "movie" : "movies"} by name of ${searchQuery}`, "filterMessage success");
     } else {
       setInnerText(filterMessage, `Found no movies by name of ${searchQuery}`, "filterMessage error");
     }
@@ -167,7 +175,7 @@ function populateSortOptions() {
 
 function renderMovies(moviesToRender, bySearch) {
   if (moviesToRender.length > 0 || bySearch) {
-    movieCardContainer.innerHTML = "";
-    moviesToRender.forEach((movie) => movieCardContainer.appendChild(new MovieCard(movie).card()));
+    movieContainer.innerHTML = "";
+    moviesToRender.forEach((movie) => movieContainer.appendChild(new MovieCard(movie).card()));
   }
 }

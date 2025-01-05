@@ -6,7 +6,6 @@ main {
   .heroContainer {
     height: 100dvh;
     width: 100%;
-    margin-bottom: 200px;
     position: relative;
 
     img {
@@ -29,7 +28,7 @@ main {
 .filterContainer {
   width: min(100%, 900px);
   padding: 40px;
-  margin-bottom: 70px;
+  margin: 100px 0;
   position: relative;
   z-index: 99;
   border-radius: 50px;

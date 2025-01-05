@@ -1,11 +1,11 @@
 /*Javascript for moviequiz page only*/
 import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
 import { dataListAsBtns, renderSpinner } from "./utilities/render.js";
-import { CLAUDE_KEY } from "./utilities/apiKey.js";
-import { CLAUDE_URL, IMDB_URL } from "./utilities/endpoints.js";
+import { CLAUDE_KEY, TMDB_KEY } from "./utilities/apiKey.js";
+import { CLAUDE_URL } from "./utilities/endpoints.js";
 import { useClickEvent } from "./utilities/events.js";
-import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { MovieCard } from "./classes/MoiveCard.js";
+import { filterUniqueTitles } from "./utilities/utility.js";
 
 const genreContainer = document.getElementById("genres");
 const seasonContainer = document.getElementById("seasons");
@@ -66,79 +66,47 @@ async function generateMovies() {
     }),
   };
 
+  let content;
+
   try {
     renderSpinner(moiveContainer);
+
     const response = await fetch(CLAUDE_URL, options);
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+
     const result = await response.json();
-    const content = result.choices[0].message.content;
-
-    const movieArray = content
-      .split("$")
-      .map((movieName) => movieName.replace("$", "").replace("\n", ""))
-      .filter((line) => line.trim() !== "");
-
-    if (movieArray) {
-      const imdbMovieIDsPromises = movieArray.map((movieName) => {
-        const originalTitle = movieName;
-        const primaryTitle = movieName;
-        const params = `search?originalTitle=${encodeURIComponent(originalTitle)}&primaryTitle=${encodeURIComponent(primaryTitle)}&type=movie`;
-        return new ApiClientImdb(moiveContainer, `${IMDB_URL}/${params}`).cachedData();
-      });
-
-      const imdbMovieIDs = await Promise.allSettled(imdbMovieIDsPromises);
-
-      const imdbIDs = imdbMovieIDs
-        .map((result) => {
-          if (result.status === "fulfilled") {
-            return result.value;
-          } else {
-            return null;
-          }
-        })
-        .filter((result) => result !== null)
-        .map((result) => (result.results[0] ? result.results[0].id : null))
-        .filter((id) => id !== null);
-
-      const imdbMovieDataPromises = imdbIDs.map((id) => {
-        return new ApiClientImdb(moiveContainer, `${IMDB_URL}/${id}`).cachedData();
-      });
-
-      const imdbMoiveData = await Promise.allSettled(imdbMovieDataPromises);
-
-      const imdbMovies = imdbMoiveData
-        .map((result) => {
-          if (result.status === "fulfilled") {
-            return result.value;
-          } else {
-            return null;
-          }
-        })
-        .filter((result) => result !== null)
-        .filter((movie) => {
-          const posterSrc = movie.primaryImage;
-          const rating = movie.averageRating;
-          return posterSrc && typeof posterSrc === "string" && posterSrc.startsWith("http") && rating && rating >= 4;
-        })
-        .map((movie) => ({ id: movie.id, title: movie.primaryTitle, rating: movie.averageRating, posterSrc: movie.primaryImage, year: movie.startYear }));
-
-      selectedCategories.genres = [];
-      selectedCategories.seasons = [];
-      selectedCategories.themes = [];
-
-      movies = imdbMovies;
-
-      resetBtns();
-      renderMovies();
-
-      if (movies.length === 0) {
-        noMoviesFound();
-      }
-    }
+    content = result.choices[0].message.content;
   } catch (error) {
     console.error(error);
+  }
+
+  const movieArray = content
+    .split("$")
+    .map((movieName) => movieName.replace("$", "").replace("\n", ""))
+    .filter((line) => line.trim() !== "");
+
+  if (movieArray) {
+    const tmdbMoviePromises = movieArray.map((movieName) => {
+      const params = `search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(movieName)}`;
+      return new ApiClientTmdb(moiveContainer).cachedData(params);
+    });
+
+    const data = await Promise.all(tmdbMoviePromises);
+    movies = filterUniqueTitles(data.flatMap((dataItem) => dataItem.results).filter((movie) => movie.poster_path && movie.vote_average > 6));
+
+    selectedCategories.genres = [];
+    selectedCategories.seasons = [];
+    selectedCategories.themes = [];
+
+    resetBtns();
+    renderMovies();
+
+    if (movies.length === 0) {
+      noMoviesFound();
+    }
   }
 }
 

@@ -35,7 +35,10 @@ async function loadWatchList() {
         return null;
       }
     })
-    .filter((movie) => movie !== null);
+    .filter((movie) => movie !== null)
+    .map((movie) => ({ id: movie.id, title: movie.primaryTitle, rating: movie.averageRating, posterSrc: movie.primaryImage, year: movie.startYear }));
+
+  console.log(movies);
 
   renderPageMessage();
   renderWatchList();

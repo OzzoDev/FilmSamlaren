@@ -121,7 +121,8 @@ async function generateMovies() {
           const posterSrc = movie.primaryImage;
           const rating = movie.averageRating;
           return posterSrc && typeof posterSrc === "string" && posterSrc.startsWith("http") && rating && rating >= 4;
-        });
+        })
+        .map((movie) => ({ id: movie.id, title: movie.primaryTitle, rating: movie.averageRating, posterSrc: movie.primaryImage, year: movie.startYear }));
 
       selectedCategories.genres = [];
       selectedCategories.seasons = [];

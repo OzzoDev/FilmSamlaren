@@ -1,5 +1,5 @@
 /*Js for movieDetails page*/
-import { load, save, formatMinutes, formatLargeNumber, formatDate } from "./utilities/utility.js";
+import { load, save, formatMinutes, formatLargeNumber, formatDate, sortByTitleMatch } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK, WATCHLIST_LSK } from "./utilities/key.js";
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { IMDB_URL } from "./utilities/endpoints.js";
@@ -21,13 +21,23 @@ function init() {
 async function loadMovieDetails() {
   const selectedMovie = load(MOVIEDETAILS_LSK);
 
+  console.log(selectedMovie);
+
   if (selectedMovie) {
-    const movieDetails = await new ApiClientImdb(movieDetailsEl, `${IMDB_URL}/${selectedMovie}`).cachedData();
+    const params = `search?originalTitle=${encodeURIComponent(selectedMovie.title)}&primaryTitle=${encodeURIComponent(selectedMovie.title)}&type=movie&startYearTo=${selectedMovie.year}`;
+    const movieDetails = await new ApiClientImdb(movieDetailsEl, `${IMDB_URL}/${params}`).cachedData();
 
-    movie = movieDetails;
+    if (movieDetails.results.length === 0) {
+      renderNoDetails(selectedMovie.title);
+    } else {
+      const requestedMovie = sortByTitleMatch(movieDetails.results, selectedMovie.title)[0];
+      const movieID = requestedMovie.id;
+      movie = await new ApiClientImdb(movieDetailsEl, `${IMDB_URL}/${movieID}`).cachedData();
+      movie.primaryImage = selectedMovie.posterSrc;
 
-    renderMovieDetails();
-    toggleWatchListIcon();
+      renderMovieDetails();
+      toggleWatchListIcon();
+    }
   }
 }
 
@@ -297,4 +307,12 @@ function renderExternalLinks() {
   });
 
   movieDetailsEl.appendChild(linksEl);
+}
+
+function renderNoDetails(title) {
+  movieDetailsEl.innerHTML = "";
+  const messageEl = document.createElement("h1");
+  messageEl.setAttribute("class", "error");
+  messageEl.innerText = `No details found for ${title}`;
+  movieDetailsEl.appendChild(messageEl);
 }

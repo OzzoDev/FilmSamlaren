@@ -1,42 +1,38 @@
 import { redirect, save } from "../utilities/utility.js";
 import { MOVIEDETAILS_LSK } from "../utilities/key.js";
 import { iconValue } from "../utilities/render.js";
+import { useClickEvent } from "../utilities/events.js";
 
 export class MovieCard {
   constructor(movie) {
-    this.movie = movie;
+    this.id = movie.id;
+    this.title = movie.title;
+    this.rating = movie.rating;
+    this.posterSrc = movie.posterSrc || "../../res/images/moviePosterPlaceholder.jpg";
+    this.year = movie.year;
   }
 
   card() {
-    const movie = this.movie;
-
-    const id = movie.id;
-    const title = movie.title || movie.primaryTitle;
-    const rating = movie.averageRating || 0;
-    const posterSrc = movie.primaryImage || movie.Poster || "../../res/images/moviePosterPlaceholder.jpg";
-
     const movieCard = document.createElement("div");
     const poster = document.createElement("img");
-    const ratingIcon = iconValue(rating, "ribbon", `${title} has an imdb rating of ${rating}`, "right");
+    const ratingIcon = iconValue(this.rating, "ribbon", `${this.title} has an imdb rating of ${this.rating}`, "right");
 
     poster.setAttribute("src", "../../res/images/moviePosterPlaceholder.jpg");
     poster.setAttribute("class", "poster");
-    poster.setAttribute("alt", title);
+    poster.setAttribute("alt", this.title);
 
     const actualPoster = new Image();
 
-    if (posterSrc && typeof posterSrc === "string" && posterSrc.startsWith("http")) {
-      actualPoster.src = posterSrc;
+    if (this.posterSrc && typeof this.posterSrc === "string" && this.posterSrc.startsWith("http")) {
+      actualPoster.src = this.posterSrc;
       actualPoster.onload = () => {
-        poster.setAttribute("src", posterSrc);
+        poster.setAttribute("src", this.posterSrc);
       };
     } else {
       actualPoster.src = "../../res/images/moviePosterPlaceholder.jpg";
     }
 
-    movieCard.addEventListener("click", () => {
-      this.movieDetails(id);
-    });
+    useClickEvent(movieCard, () => this.movieDetails(this.title, this.posterSrc, this.id, this.year));
 
     movieCard.setAttribute("class", "movieCard");
     movieCard.append(poster, ratingIcon);
@@ -44,8 +40,9 @@ export class MovieCard {
     return movieCard;
   }
 
-  movieDetails(id) {
-    save(MOVIEDETAILS_LSK, id);
+  movieDetails(title, posterSrc, id, year) {
+    save(MOVIEDETAILS_LSK, { title, posterSrc, id, year });
+
     setTimeout(() => {
       redirect("movieDetails.html");
     }, 100);

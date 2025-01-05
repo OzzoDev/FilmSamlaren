@@ -112,7 +112,7 @@ export function removeAllWhitespaces(str) {
 }
 
 export function lowercaseFirstChar(str) {
-  if (str.length === 0) return str; // Return the empty string as is
+  if (str.length === 0) return str;
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
 
@@ -159,4 +159,45 @@ export function formatDate(date) {
 
 export function redirect(path) {
   window.location.href = path;
+}
+
+export function calculateMatchScore(primaryTitle, originalTitle, searchString) {
+  const combinedTitle = `${primaryTitle} ${originalTitle}`.toLowerCase();
+  const lowerSearch = searchString.toLowerCase();
+
+  let score = 0;
+
+  if (primaryTitle.toLowerCase() === lowerSearch) {
+    score += 10;
+  }
+
+  if (originalTitle.toLowerCase() === lowerSearch) {
+    score += 10;
+  }
+
+  if (combinedTitle === lowerSearch) {
+    score += 9;
+  }
+
+  if (combinedTitle.includes(lowerSearch)) {
+    score += 5;
+  }
+
+  const searchWords = lowerSearch.split(" ");
+  for (let word of searchWords) {
+    if (combinedTitle.includes(word)) {
+      score += 1;
+    }
+  }
+
+  return score;
+}
+
+export function sortByTitleMatch(arr, searchString) {
+  return arr.sort((a, b) => {
+    const scoreA = calculateMatchScore(a.primaryTitle, a.originalTitle, searchString);
+    const scoreB = calculateMatchScore(b.primaryTitle, b.originalTitle, searchString);
+
+    return scoreB - scoreA;
+  });
 }

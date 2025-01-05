@@ -131,10 +131,8 @@ export class ApiClientImdb {
     const loadedData = useCachedData(key);
 
     if (loadedData) {
-      // console.log("Servering cached data for", key);
       return loadedData;
     }
-    // console.log("Servering fetched data for", key);
     const fetchedData = this.fetchData(true);
     return fetchedData;
   }
@@ -145,10 +143,8 @@ export class ApiClientImdb {
     const loadedData = useCachedData(key);
 
     if (loadedData) {
-      // console.log("Servering cached data for", key);
       return loadedData;
     }
-    // console.log("Servering fetched data for", key);
     const fetchedData = this.fetchData(false);
     return fetchedData;
   }

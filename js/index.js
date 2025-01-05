@@ -2,7 +2,7 @@
 import { ApiClientImdb } from "./classes/ApiClientImdb.js";
 import { ApiClientOmdb } from "./classes/ApiClientOmdb.js";
 import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
-import { IMDB_URL } from "./utilities/endpoints.js";
+import { IMDB_URL, TMDB_URL } from "./utilities/endpoints.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { useScrollEvent, useClickEvent, useClickEvents, useInputEvent } from "./utilities/events.js";
 import { sortAz } from "./utilities/utility.js";
@@ -45,7 +45,10 @@ async function getData() {
 
   const response = await Promise.all(promises);
 
-  movies = response[0];
+  movies = response[0].map((movie) => ({ id: movie.id, title: movie.primaryTitle || movie.title, rating: movie.averageRating, posterSrc: movie.primaryImage, year: movie.startYear }));
+
+  console.log(movies);
+
   genres = response[1].genres;
   genreNames = sortAz(response[1].genres.map((genre) => genre.name));
 
@@ -59,66 +62,20 @@ async function getMoviesByGenre(genre) {
   if (genre === "Top 250") {
     const top250 = await apiClientTopMovies.cachedData();
     movies = top250;
-    renderMovies();
   } else {
     const genreId = genres.find((gen) => gen.name === genre).id;
+
     const moviesDataByGenre = await apiClientGenres.getMoviesByGenre(genreId);
     const moviesByGenre = moviesDataByGenre.results;
-    const requestedProperties = moviesByGenre.map((movieObj) => ({ originalTitle: movieObj.original_title, primaryTitle: movieObj.original_title, startYearTo: parseInt(movieObj.release_date) }));
 
-    const imdbMovieIDsPromises = requestedProperties.map((property) => {
-      const originalTitle = property.originalTitle;
-      const primaryTitle = property.primaryTitle;
-      const startYearTo = property.startYearTo;
-      const params = `search?originalTitle=${encodeURIComponent(originalTitle)}&primaryTitle=${encodeURIComponent(primaryTitle)}&type=movie&startYearTo=${startYearTo}`;
-      return new ApiClientImdb(movieCardContainer, `${IMDB_URL}/${params}`).cachedData();
-    });
+    console.log("movies: ", moviesByGenre);
 
-    const imdbMovieIDs = await Promise.allSettled(imdbMovieIDsPromises);
-
-    const imdbIDs = imdbMovieIDs
-      .map((result) => {
-        if (result.status === "fulfilled") {
-          return result.value;
-        } else {
-          return null;
-        }
-      })
-      .filter((result) => result !== null)
-      .map((result) => (result.results[0] ? result.results[0].id : null))
-      .filter((id) => id !== null);
-
-    const imdbMovieDataPromises = imdbIDs.map((id) => {
-      return new ApiClientImdb(movieCardContainer, `${IMDB_URL}/${id}`).cachedData();
-    });
-
-    const imdbMoiveData = await Promise.allSettled(imdbMovieDataPromises);
-
-    const imdbMovies = imdbMoiveData
-      .map((result) => {
-        if (result.status === "fulfilled") {
-          return result.value;
-        } else {
-          return null;
-        }
-      })
-      .filter((result) => result !== null)
-      .filter((movie) => {
-        const posterSrc = movie.primaryImage;
-        const rating = movie.averageRating;
-        return posterSrc && typeof posterSrc === "string" && posterSrc.startsWith("http") && rating && rating >= 4;
-      });
-
-    movies = Object.values(
-      imdbMovies.reduce((acc, movie) => {
-        acc[movie.primaryTitle] = movie;
-        return acc;
-      }, {})
-    );
+    movies = moviesByGenre.map((movie) => ({ id: movie.id, title: movie.original_title, rating: movie.vote_average.toFixed(1), posterSrc: `https://image.tmdb.org/t/p/w500${movie.poster_path}`, year: parseInt(movie.release_date) })).filter((movie) => movie.posterSrc);
 
     const highLowRatingOption = sortOptions.children[0];
     setSortOrder(highLowRatingOption);
   }
+  renderMovies();
 }
 
 function showGenres() {
@@ -160,7 +117,7 @@ async function searchMovies() {
 
       setTimeout(() => {
         setInnerText(filterMessage, "", "filterMessage");
-      }, 2000);
+      }, 4000);
     } else {
       setInnerText(filterMessage, `Found ${movies.length} movies by name of ${searchQuery}`, "filterMessage success");
     }
@@ -182,8 +139,6 @@ function setSortOrder(option) {
   option.classList.add("selected");
 
   selectedSortOrder = option.value;
-
-  console.log("Sort Order: ", selectedSortOrder);
 
   sortMovies(selectedSortOrder);
 
@@ -263,10 +218,7 @@ function renderMovies() {
   if (visibleMovies > 0) {
     movieCardContainer.innerHTML = "";
     for (let i = 0; i < visibleMovies; i++) {
-      const movie = movies[i];
-
-      const movieCard = new MovieCard(movie).card();
-      movieCardContainer.appendChild(movieCard);
+      movieCardContainer.appendChild(new MovieCard(movies[i]).card());
     }
   }
 }
@@ -279,9 +231,7 @@ function appendMovies() {
     visibleMovies += 10;
 
     for (let i = start; i < end; i++) {
-      const movie = movies[i];
-      const movieCard = new MovieCard(movie).card();
-      movieCardContainer.appendChild(movieCard);
+      movieCardContainer.appendChild(movieCardContainer.appendChild(new MovieCard(movies[i]).card()));
     }
   }
 }

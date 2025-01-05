@@ -204,11 +204,16 @@ export function sortByTitleMatch(arr, searchString) {
 
 export function filterUniqueTitles(arr) {
   const seenTitles = new Set();
-  return arr.filter((movie) => {
-    if (!seenTitles.has(movie.original_title)) {
-      seenTitles.add(movie.original_title);
-      return true;
-    }
-    return false;
-  });
+  const allDefined = arr.every((item) => item);
+
+  if (allDefined) {
+    return arr.filter((movie) => {
+      if (!seenTitles.has(movie.original_title)) {
+        seenTitles.add(movie.original_title);
+        return true;
+      }
+      return false;
+    });
+  }
+  return [];
 }

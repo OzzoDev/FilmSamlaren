@@ -37,6 +37,7 @@ async function getData() {
   genres = genreData.genres;
 
   await getAllMovies();
+
   renderMovies(movies);
   populateGenres(["All", ...genres.map((genre) => genre.name)]);
 }
@@ -85,7 +86,7 @@ function searchMovies() {
     }
   }
 
-  renderMovies(matchingMovies);
+  renderMovies(matchingMovies, true);
 }
 
 function sortMoives(option) {
@@ -164,7 +165,9 @@ function populateSortOptions() {
   });
 }
 
-function renderMovies(moviesToRender) {
-  movieCardContainer.innerHTML = "";
-  moviesToRender.forEach((movie) => movieCardContainer.appendChild(new MovieCard(movie).card()));
+function renderMovies(moviesToRender, bySearch) {
+  if (moviesToRender.length > 0 || bySearch) {
+    movieCardContainer.innerHTML = "";
+    moviesToRender.forEach((movie) => movieCardContainer.appendChild(new MovieCard(movie).card()));
+  }
 }

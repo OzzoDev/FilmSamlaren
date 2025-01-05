@@ -4,7 +4,6 @@ import { TMDB_URL } from "../utilities/endpoints.js";
 import { BASE_TTL } from "../utilities/ttl.js";
 import { cacheData, useCachedData, inSensitive } from "../utilities/utility.js";
 import { renderSpinner, renderErrorMessage } from "../utilities/render.js";
-import { ApiClientImdb } from "./ApiClientImdb.js";
 
 export class ApiClientTmdb {
   constructor(actionContainer, key) {
@@ -30,13 +29,19 @@ export class ApiClientTmdb {
   async getMoviesByGenre(genreId) {
     const key = `tmdbMoviesBy${genreId}`;
     const loadedData = useCachedData(key);
+
     if (loadedData) {
       return Promise.resolve(loadedData);
     }
 
     const params = `discover/movie?api_key=${TMDB_KEY}&with_genres=${genreId}`;
     const movies = await this.fetchData(false, params);
-    cacheData(key, movies, BASE_TTL);
+
+    const definedMovies = movies.results.filter((movie) => movie);
+
+    if (definedMovies.length > 0) {
+      cacheData(key, movies, BASE_TTL);
+    }
 
     return Promise.resolve(movies);
   }
@@ -140,19 +145,6 @@ export class ApiClientTmdb {
     }
 
     const fetchedData = this.fetchData(true);
-    return fetchedData;
-  }
-
-  async losseData() {
-    const key = this.key;
-
-    const loadedData = useCachedData(key);
-
-    if (loadedData) {
-      return loadedData;
-    }
-
-    const fetchedData = this.fetchData(false);
     return fetchedData;
   }
 }

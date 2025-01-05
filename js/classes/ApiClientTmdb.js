@@ -2,13 +2,12 @@
 import { TMDB_KEY } from "../utilities/apiKey.js";
 import { TMDB_URL } from "../utilities/endpoints.js";
 import { BASE_TTL } from "../utilities/ttl.js";
-import { cacheData, useCachedData, inSensitive } from "../utilities/utility.js";
+import { cacheData, useCachedData } from "../utilities/utility.js";
 import { renderSpinner, renderErrorMessage } from "../utilities/render.js";
 
 export class ApiClientTmdb {
-  constructor(actionContainer, key) {
+  constructor(actionContainer) {
     this.actionContainer = actionContainer;
-    this.key = inSensitive(key || "");
   }
 
   async getGenres() {
@@ -135,16 +134,14 @@ export class ApiClientTmdb {
     }
   }
 
-  async cachedData() {
-    const key = this.key;
-
-    const loadedData = useCachedData(key);
+  async cachedData(params) {
+    const loadedData = useCachedData(params);
 
     if (loadedData) {
       return loadedData;
     }
 
-    const fetchedData = this.fetchData(true);
+    const fetchedData = this.fetchData(true, params);
     return fetchedData;
   }
 }

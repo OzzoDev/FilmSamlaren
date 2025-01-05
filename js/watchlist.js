@@ -1,10 +1,10 @@
 /*Javascript for watchlist page only*/
 import { load, save } from "./utilities/utility.js";
 import { WATCHLIST_LSK } from "./utilities/key.js";
-import { ApiClientImdb } from "./classes/ApiClientImdb.js";
-import { IMDB_URL } from "./utilities/endpoints.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { iconBtn } from "./utilities/render.js";
+import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
+import { TMDB_KEY } from "./utilities/apiKey.js";
 
 const main = document.body.getElementsByTagName("main")[0];
 const watchlistEl = document.getElementById("watchlist");
@@ -22,23 +22,11 @@ function init() {
 
 async function loadWatchList() {
   const moviePromises = [...watchlist].map((watch) => {
-    return new ApiClientImdb(watchlistEl, `${IMDB_URL}/${watch.id}`).cachedData();
+    const params = `movie/${watch.id}?api_key=${TMDB_KEY}`;
+    return new ApiClientTmdb(watchlistEl).cachedData(params);
   });
 
-  const movieData = await Promise.allSettled(moviePromises);
-
-  movies = movieData
-    .map((result) => {
-      if ((result.status = "fulfilled")) {
-        return result.value;
-      } else {
-        return null;
-      }
-    })
-    .filter((movie) => movie !== null)
-    .map((movie) => ({ id: movie.id, title: movie.primaryTitle, rating: movie.averageRating, posterSrc: movie.primaryImage, year: movie.startYear }));
-
-  console.log(movies);
+  movies = await Promise.all(moviePromises);
 
   renderPageMessage();
   renderWatchList();
@@ -92,9 +80,7 @@ function renderWatchList() {
       dateEl.innerText = date;
 
       controlsEl.append(removeBtn, dateEl);
-
       watchEl.append(controlsEl, movieCard);
-
       watchlistEl.appendChild(watchEl);
     });
   }

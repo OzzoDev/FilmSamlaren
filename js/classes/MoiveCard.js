@@ -32,7 +32,7 @@ export class MovieCard {
       actualPoster.src = "../../res/images/moviePosterPlaceholder.jpg";
     }
 
-    useClickEvent(movieCard, () => this.movieDetails(this.title, this.posterSrc, this.id, this.year));
+    useClickEvent(movieCard, () => this.movieDetails(this.id));
 
     movieCard.setAttribute("class", "movieCard");
     movieCard.append(poster, ratingIcon);
@@ -40,9 +40,8 @@ export class MovieCard {
     return movieCard;
   }
 
-  movieDetails(title, posterSrc, id, year) {
-    save(MOVIEDETAILS_LSK, { title, posterSrc, id, year });
-
+  movieDetails(id) {
+    save(MOVIEDETAILS_LSK, id);
     setTimeout(() => {
       redirect("movieDetails.html");
     }, 100);

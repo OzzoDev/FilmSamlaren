@@ -1,13 +1,15 @@
 /*Js for movieDetails page*/
-import { load, save, formatMinutes, formatLargeNumber, formatDate, sortByTitleMatch } from "./utilities/utility.js";
+import { load, save, formatMinutes, formatLargeNumber, formatDate } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK, WATCHLIST_LSK } from "./utilities/key.js";
-import { ApiClientImdb } from "./classes/ApiClientImdb.js";
-import { IMDB_URL } from "./utilities/endpoints.js";
-import { iconBtn, iconValue, populateUl, ulWithHeader, valueWithHeader, iconLink, setIcon } from "./utilities/render.js";
+import { iconValue, populateUl } from "./utilities/render.js";
 import { useClickEvent } from "./utilities/events.js";
+import { TMDB_KEY } from "./utilities/apiKey.js";
+import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
 
+let watchlist = load(WATCHLIST_LSK) || [];
+let isTracked;
 let movie;
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -22,289 +24,101 @@ async function loadMovieDetails() {
   const selectedMovie = load(MOVIEDETAILS_LSK);
 
   if (selectedMovie) {
-    const params = `search?originalTitle=${encodeURIComponent(selectedMovie.title)}&primaryTitle=${encodeURIComponent(selectedMovie.title)}&type=movie&startYearTo=${selectedMovie.year}`;
-    const movieDetails = await new ApiClientImdb(movieDetailsEl, `${IMDB_URL}/${params}`).cachedData();
+    const params = `movie/${selectedMovie}?api_key=${TMDB_KEY}`;
+    movie = await new ApiClientTmdb(movieDetailsEl).cachedData(params);
+    isTracked = watchlist.map((watch) => watch.id).includes(movie.id);
 
-    if (movieDetails.results.length === 0) {
+    console.log("Movies Details from tmdb: ", movie);
+
+    if (!movie) {
       renderNoDetails(selectedMovie.title);
     } else {
-      const requestedMovie = sortByTitleMatch(movieDetails.results, selectedMovie.title)[0];
-      const movieID = requestedMovie.id;
-      movie = await new ApiClientImdb(movieDetailsEl, `${IMDB_URL}/${movieID}`).cachedData();
-      movie.primaryImage = selectedMovie.posterSrc;
-
       renderMovieDetails();
-      toggleWatchListIcon();
     }
   }
-}
-
-function toggleWatchListIcon() {
-  const toggleIcon = document.getElementById("watchlistToggle");
-  const title = movie.primaryTitle;
-
-  useClickEvent(toggleIcon, toggleMovieInWatchList);
-
-  if (movieIsInWatchlist()) {
-    setIcon(toggleIcon, "trash", `Remove ${title} to watchlist`);
-  } else {
-    setIcon(toggleIcon, "plus", `Add ${title} to watchlist`);
-  }
-}
-
-function toggleMovieInWatchList() {
-  const toggleIcon = document.getElementById("watchlistToggle");
-  const title = movie.primaryTitle;
-  const id = movie.id;
-
-  let watchlist = load(WATCHLIST_LSK) || [];
-
-  if (movieIsInWatchlist()) {
-    watchlist = watchlist.filter((movie) => movie.id !== id);
-    setIcon(toggleIcon, "plus", `Add ${title} to watchlist`);
-  } else {
-    watchlist = [...watchlist, { id, addedAt: formatDate(new Date()) }];
-    setIcon(toggleIcon, "trash", `Remove ${title} from watchlist`);
-  }
-
-  save(WATCHLIST_LSK, watchlist);
-}
-
-function movieIsInWatchlist() {
-  const id = movie.id;
-  const watchlist = load(WATCHLIST_LSK) || [];
-  const isTracked = watchlist.map((watch) => watch.id).includes(id);
-  return isTracked;
 }
 
 function renderMovieDetails() {
   movieDetailsEl.innerHTML = "";
-  renderHeading();
-  renderYearDuration();
-  renderPoster();
-  renderCinematicAtlas();
-  renderDesc();
-  renderLanguages();
-  renderCinematicTeam();
-  renderFinancials();
-  renderExternalLinks();
-}
 
-function renderHeading() {
-  const title = movie.primaryTitle;
-  const rating = movie.averageRating;
-
-  const headingEl = document.createElement("div");
-  const addToWatchListEl = iconBtn("plus", `Add ${title} to watchlist`);
-  const titleEl = document.createElement("h1");
-  const ratingIconEl = iconValue(rating, "ribbon", `${title} has an imdb rating of ${rating}`, "right");
-
-  addToWatchListEl.setAttribute("id", "watchlistToggle");
-
-  headingEl.setAttribute("class", "heading");
-  addToWatchListEl.classList.add("addToWatchList");
-  titleEl.setAttribute("class", "title");
-  ratingIconEl.classList.add("rating");
-
-  titleEl.innerText = title;
-
-  headingEl.append(addToWatchListEl, titleEl, ratingIconEl);
-
-  movieDetailsEl.appendChild(headingEl);
-}
-
-function renderYearDuration() {
-  const year = movie.startYear;
-  const duration = formatMinutes(movie.runtimeMinutes);
-
-  const yearDurationEl = document.createElement("div");
-  const yearEl = document.createElement("p");
-  const durationEl = document.createElement("p");
-
-  yearDurationEl.setAttribute("class", "yearDuration");
-  yearEl.setAttribute("class", "year");
-  durationEl.setAttribute("class", "duration");
-
-  yearEl.innerText = year;
-  durationEl.innerText = duration;
-
-  yearDurationEl.append(yearEl, durationEl);
-
-  movieDetailsEl.appendChild(yearDurationEl);
-}
-
-function renderPoster() {
-  const posterSrc = movie.primaryImage;
-  const title = movie.primaryTitle;
+  const id = movie.id;
+  const title = movie.original_title;
+  const posterSrc = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  const rating = movie.vote_average.toFixed(1);
+  const duration = formatMinutes(movie.runtime);
+  const date = movie.release_date;
+  const popularity = movie.popularity;
+  const votes = movie.vote_count;
+  const country = movie.origin_country[0];
+  const language = movie.original_language;
+  const genres = movie.genres.map((genre) => genre.name);
+  const desc = movie.overview;
 
   const posterEl = document.createElement("img");
+  const movieDataEl = document.createElement("div");
+  const headingEl = document.createElement("div");
+  const titleEl = document.createElement("h1");
+  const ratingIconEl = iconValue(rating, "ribbon", `${title} has an rating of ${rating}`, "right");
+  const durationEl = document.createElement("p");
+  const dateEl = document.createElement("p");
+  const popularityEl = document.createElement("p");
+  const votesEl = document.createElement("p");
+  const countryEl = document.createElement("p");
+  const languageEL = document.createElement("p");
+  const genresEl = document.createElement("ul");
+  const descEl = document.createElement("p");
+  const watchListBtn = document.createElement("button");
 
   posterEl.setAttribute("class", "poster");
-  posterEl.setAttribute("src", "../../res/images/moviePosterPlaceholder.jpg");
+  movieDataEl.setAttribute("class", "movieData");
+  headingEl.setAttribute("class", "movieHeader");
+  titleEl.setAttribute("class", "title");
+  ratingIconEl.classList.add("rating");
+  durationEl.setAttribute("class", "duration movieStat");
+  dateEl.setAttribute("class", "date movieStat");
+  popularityEl.setAttribute("class", "popularity movieStat");
+  votesEl.setAttribute("class", "votes movieStat");
+  countryEl.setAttribute("class", "country movieStat");
+  languageEL.setAttribute("class", "language movieStat");
+  genresEl.setAttribute("class", "genres");
+  descEl.setAttribute("class", "desc");
+  watchListBtn.setAttribute("class", "watchList btn");
+
+  posterEl.setAttribute("class", "poster");
+  posterEl.setAttribute("src", posterSrc);
   posterEl.setAttribute("alt", title);
 
-  const loadingPoster = new Image();
-
-  if (posterSrc && typeof posterSrc === "string" && posterSrc.startsWith("http")) {
-    loadingPoster.setAttribute("src", posterSrc);
-    loadingPoster.onload = () => {
-      posterEl.setAttribute("src", posterSrc);
-    };
-  } else {
-    loadingPoster.setAttribute("class", posterSrc);
-  }
-
-  movieDetailsEl.appendChild(posterEl);
-}
-
-function renderCinematicAtlas() {
-  const countries = movie.countriesOfOrigin || [];
-  const locations = movie.filmingLocations || [];
-  const genres = movie.genres || [];
-  const interests = movie.interests || [];
-
-  const cinematicAtlasEl = document.createElement("div");
-  const countriesEl = document.createElement("ul");
-  const locationsEl = document.createElement("ul");
-  const genresEl = document.createElement("ul");
-  const interestsEl = document.createElement("ul");
-
-  cinematicAtlasEl.setAttribute("class", "cinematicAtlas");
-  countriesEl.setAttribute("class", "countries dataList");
-  locationsEl.setAttribute("class", "locations dataList");
-  genresEl.setAttribute("class", "genres dataList dataListRight");
-  interestsEl.setAttribute("class", "interests dataList dataListRight");
-
-  countriesEl.setAttribute("data-title", "Countries");
-  locationsEl.setAttribute("data-title", "Locations");
-  genresEl.setAttribute("data-title", "Genres");
-  interestsEl.setAttribute("data-title", "Interests");
-
-  populateUl(countriesEl, countries, "country dataItem");
-  populateUl(locationsEl, locations, "location dataItem");
-  populateUl(genresEl, genres, "genres dataItem");
-  populateUl(interestsEl, interests, "interests dataItem");
-
-  cinematicAtlasEl.append(countriesEl, genresEl, locationsEl, interestsEl);
-
-  movieDetailsEl.appendChild(cinematicAtlasEl);
-}
-
-function renderDesc() {
-  const desc = movie.description;
-  const descEl = document.createElement("p");
-
-  descEl.setAttribute("class", "desc");
+  titleEl.innerText = title;
+  durationEl.innerText = duration;
+  dateEl.innerText = date;
+  popularityEl.innerText = `Popularity: ${popularity}`;
+  votesEl.innerText = `Votes: ${votes}`;
   descEl.innerText = desc;
+  countryEl.innerHTML = `Country: ${country}`;
+  languageEL.innerHTML = `Language: ${language}`;
+  watchListBtn.innerText = isTracked ? "Remove from watchlist" : "Add to watchlist";
 
-  movieDetailsEl.appendChild(descEl);
-}
+  populateUl(genresEl, genres, "genre");
 
-function renderLanguages() {
-  const languages = movie.spokenLanguages;
-  const languagesEl = document.createElement("ul");
+  const toggleMovieInWatchList = () => {
+    isTracked = [...watchlist].map((watch) => watch.id).includes(movie.id);
 
-  languagesEl.setAttribute("class", "languages");
-
-  populateUl(languagesEl, languages, "language");
-
-  movieDetailsEl.appendChild(languagesEl);
-}
-
-function renderCinematicTeam() {
-  const directors = movie.directors.map((director) => director.fullName) || [];
-  const writers = movie.writers.map((writer) => writer.fullName) || [];
-  const cast = movie.cast || [];
-
-  const cinematicTeamEl = document.createElement("div");
-  const directorsWritersEl = document.createElement("div");
-  const castEl = document.createElement("ul");
-  const castLabelEl = document.createElement("h3");
-  const direcotrsEl = ulWithHeader(directors, "Directors", "directors", "directorsHeader", "directorsList", "director");
-  const writersEl = ulWithHeader(writers, "Writers", "writers", "writersHeader", "writersList", "writer");
-
-  cinematicTeamEl.setAttribute("class", "cinematicTeam");
-  directorsWritersEl.setAttribute("class", "directorsWriters");
-  castLabelEl.setAttribute("class", "castLabel");
-  castEl.setAttribute("class", "cast");
-
-  castLabelEl.innerText = "Cast";
-
-  cast.forEach((contributor) => {
-    const contributorName = contributor.fullName;
-    const contributorJob = contributor.job.replace("_", " ") || "";
-    const contributorCharacters = contributor.characters || [];
-
-    const contributorItemEl = document.createElement("li");
-    const contributorNameEl = document.createElement("h3");
-    const contributorJobEl = document.createElement("h4");
-    const contributorCharactersLabelEl = document.createElement("p");
-    const contributorCharactersEl = document.createElement("ul");
-
-    contributorItemEl.setAttribute("class", "contributor");
-    contributorNameEl.setAttribute("class", "contributorName");
-    contributorJobEl.setAttribute("class", "contributorJob");
-    contributorCharactersLabelEl.setAttribute("class", "contributorCharactersLabel");
-    contributorCharactersEl.setAttribute("class", "contributorCharacters");
-
-    contributorNameEl.innerText = contributorName;
-    contributorJobEl.innerText = contributorJob;
-    contributorCharactersLabelEl.innerText = "Characters";
-
-    contributorCharacters.forEach((character) => {
-      const characterItemEl = document.createElement("li");
-      characterItemEl.setAttribute("class", "character");
-      characterItemEl.innerText = character;
-      contributorCharactersEl.appendChild(characterItemEl);
-    });
-
-    contributorItemEl.appendChild(contributorNameEl);
-    contributorItemEl.appendChild(contributorJobEl);
-    if (contributorCharacters.length > 0) {
-      contributorItemEl.appendChild(contributorCharactersLabelEl);
+    if (isTracked) {
+      watchlist = watchlist.filter((movie) => movie.id !== id);
+      watchListBtn.innerText = "Add to watchlist";
+    } else {
+      watchlist = [...watchlist, { id, addedAt: formatDate(new Date()) }];
+      watchListBtn.innerText = "Remove from watchlist";
     }
-    contributorItemEl.appendChild(contributorCharactersEl);
 
-    castEl.appendChild(contributorItemEl);
-  });
+    save(WATCHLIST_LSK, watchlist);
+  };
 
-  directorsWritersEl.append(direcotrsEl, writersEl);
-  cinematicTeamEl.append(directorsWritersEl, castLabelEl, castEl);
+  useClickEvent(watchListBtn, toggleMovieInWatchList);
 
-  movieDetailsEl.appendChild(cinematicTeamEl);
-}
-
-function renderFinancials() {
-  const budget = formatLargeNumber(movie.budget || "");
-  const revenue = formatLargeNumber(movie.grossWorldwide || "");
-
-  const financialsEl = document.createElement("div");
-  const budgetEl = valueWithHeader(budget, "Budget", "budget", "budgetHeader", "budgetText");
-  const revenueEl = valueWithHeader(revenue, "Revenue", "revenue", "revenueHeader", "revenueText");
-
-  financialsEl.setAttribute("class", "financials");
-
-  financialsEl.append(budgetEl, revenueEl);
-
-  movieDetailsEl.appendChild(financialsEl);
-}
-
-function renderExternalLinks() {
-  const title = movie.primaryTitle;
-  const links = movie.externalLinks || [];
-  const linksEl = document.createElement("div");
-
-  const socials = ["instagram", "facebook", "twitter", "tiktok"];
-
-  linksEl.setAttribute("class", "links");
-
-  links.forEach((link) => {
-    const iconPath = socials.find((social) => link.includes(social)) || "internet";
-    const linkEl = iconLink(link, iconPath, iconPath === "internet" ? `Read more about ${title}` : `Visit ${title}'s ${iconPath}`, "link");
-    linksEl.appendChild(linkEl);
-  });
-
-  movieDetailsEl.appendChild(linksEl);
+  headingEl.append(titleEl, ratingIconEl);
+  movieDataEl.append(headingEl, durationEl, dateEl, popularityEl, votesEl, countryEl, languageEL, genresEl, descEl, watchListBtn);
+  movieDetailsEl.append(posterEl, movieDataEl);
 }
 
 function renderNoDetails(title) {

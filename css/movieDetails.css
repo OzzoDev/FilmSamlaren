@@ -1,277 +1,110 @@
-/*Css for movieDetails page*/
+/* Css for movieDetails page */
 
 main {
   width: 100%;
 
   .movieDetails {
     width: 100%;
-    padding: 20px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-
-    .heading {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-
-      .addToWatchList {
-        height: fit-content;
-        &:hover {
-          cursor: pointer;
-        }
-      }
-
-      .rating {
-        p {
-          font-size: 1.4rem;
-        }
-      }
-    }
-
-    .yearDuration {
-      width: fit-content;
-      padding: 20px 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 200px;
-      border-radius: 50px;
-      box-shadow: inset 0 0 10px var(--color-surface-a20);
-
-      .year,
-      .duration {
-        font-size: 1.4rem;
-      }
-    }
+    justify-content: space-between;
 
     .poster {
-      width: min(100%, 1000px);
+      width: 100%;
     }
 
-    .cinematicAtlas {
-      width: min(100%, 1100px);
-      padding: 0 40px;
+    .movieData {
+      width: 100%;
+      padding: 0 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      row-gap: 30px;
+      align-items: flex-start;
 
-      .dataList {
+      .movieHeader {
         width: 100%;
-        padding: 30px 40px 40px 40px;
-        border-radius: 20px;
-        border: 1px solid var(--color-primary-a50);
+        padding-top: 20px;
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+
+        .title {
+          margin: 0;
+          font-size: clamp(3rem, 3vw, 3.5rem);
+        }
+
+        .rating {
+          align-self: flex-start;
+          img {
+            width: 40px;
+          }
+
+          p {
+            font-size: 2rem;
+          }
+        }
+      }
+
+      .movieStat {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        color: var(--color-primary-a30);
+      }
+
+      .duration {
+        color: var(--color-surface-mixed-a50);
+      }
+
+      .desc {
+        width: min(100%, 900px);
+        margin-top: 180px;
+        font-size: 1.5rem;
+        text-align: center;
+        align-self: center;
+      }
+
+      .genres {
+        margin-top: 100px;
+        padding: 20px;
+        align-self: center;
         display: flex;
         justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        position: relative;
-
-        .dataItem {
-          white-space: nowrap;
-        }
-
-        &::after {
-          content: attr(data-title);
-          font-size: 0.8rem;
-          position: absolute;
-          top: -22px;
-          left: -20px;
-          padding: 10px;
-          border-radius: 50px;
-          border: 1px solid var(--color-primary-a50);
-          background-color: var(--color-surface-a0);
-        }
-      }
-
-      .dataListRight {
-        &::after {
-          left: auto;
-          right: -22px;
-        }
-      }
-    }
-
-    .countries,
-    .locations {
-      flex-direction: column;
-    }
-
-    .desc {
-      margin-top: 40px;
-      width: min(100%, 1400px);
-      text-align: center;
-      font-size: clamp(1.4rem, 2vw, 2rem);
-    }
-
-    .languages {
-      width: fit-content;
-      margin: 40px;
-      padding: 40px 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      border-radius: 50px;
-      box-shadow: inset 0 0 10px var(--color-surface-a20);
-
-      .language {
-        font-size: clamp(0.9rem, 2vw, 1.4rem);
-      }
-    }
-
-    .cinematicTeam {
-      width: 100%;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 40px;
-      border-radius: 50px;
-      border: 1px solid var(--color-primary-a50);
-
-      .directorsWriters {
-        width: 100%;
-        padding-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-evenly;
         gap: 20px;
-        border-bottom: 1px solid var(--color-surface-a20);
+        border-radius: 50px;
+        box-shadow: inset 0 0 10px var(--color-surface-a20);
 
-        .directors,
-        .writers {
-          .directorsList,
-          .writersList {
-            margin-top: 7px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-          }
+        .genre {
+          font-size: 1.1rem;
+          color: var(--color-surface-mixed-a50);
         }
       }
 
-      .castLabel {
-        font-size: 1.4rem;
-        margin-bottom: 30px;
-        color: var(--color-surface-a50);
-      }
-
-      .cast {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        list-style: none;
-
-        .contributor {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 7px;
-
-          .contributorName {
-            font-size: 1.1rem;
-            font-weight: 500;
-          }
-
-          .contributorJob {
-            font-size: 0.9rem;
-            font-weight: 400;
-          }
-
-          .contributorCharactersLabel {
-            margin-top: 8px;
-            font-size: 0.8rem;
-            color: var(--color-surface-mixed-a50);
-          }
-
-          .contributorCharacters {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-
-            .character {
-              font-size: 0.8rem;
-            }
-          }
-        }
+      .watchList {
+        margin-top: 200px;
+        align-self: center;
       }
     }
-
-    .financials {
-      width: fit-content;
-      margin: 40px;
-      padding: 40px 30px;
-      display: flex;
-      justify-content: center;
-      gap: 200px;
-      border-radius: 50px;
-      box-shadow: inset 0 0 10px var(--color-surface-a20);
-
-      .budget,
-      .revenue {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 7px;
-      }
-    }
-
-    .links {
-      margin-bottom: 30px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
   }
 }
 
-@media (min-width: 475px) {
-  .languages {
-    padding: 20px 30px !important;
-    flex-direction: row !important;
-  }
+footer {
+  margin: 0 !important;
 }
 
-@media (min-width: 600px) {
-  .cast {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 70px;
+@media (max-width: 1200px) {
+  .movieDetails {
+    flex-direction: column;
   }
-}
 
-@media (min-width: 768px) {
-  .cinematicAtlas {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 70px;
-    row-gap: 70px !important;
-    align-items: stretch !important;
+  .movieHeader {
+    flex-direction: column;
   }
-}
 
-@media (min-width: 1024px) {
-  .cast {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 70px;
+  .rating {
+    align-self: center !important;
   }
-}
 
-@media (min-width: 1440px) {
-  .cast {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr);
-    column-gap: 70px;
+  .movieStat {
+    align-self: center;
   }
 }

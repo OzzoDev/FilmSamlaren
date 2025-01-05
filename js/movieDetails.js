@@ -1,10 +1,10 @@
 /*Js for movieDetails page*/
-import { load, save, formatMinutes, formatLargeNumber, formatDate } from "./utilities/utility.js";
+import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
+import { TMDB_KEY } from "./utilities/apiKey.js";
+import { load, save, formatMinutes, formatDate } from "./utilities/utility.js";
 import { MOVIEDETAILS_LSK, WATCHLIST_LSK } from "./utilities/key.js";
 import { iconValue, populateUl } from "./utilities/render.js";
 import { useClickEvent } from "./utilities/events.js";
-import { TMDB_KEY } from "./utilities/apiKey.js";
-import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
 

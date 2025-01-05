@@ -74,61 +74,6 @@ export function compareWithTempDate(date1, date2, timeLimitInSeconds) {
   return d1 > d2;
 }
 
-export function formatLargeNumber(num) {
-  if (num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  }
-  return num;
-}
-
-export function normalSort(arr, key) {
-  return [...arr].sort((a, b) => {
-    if (typeof a[key] === "string") {
-      return a[key].localeCompare(b[key]);
-    } else {
-      return a[key] - b[key];
-    }
-  });
-}
-
-export function reverseSort(arr, key) {
-  return [...arr].sort((a, b) => {
-    if (typeof a[key] === "string") {
-      return b[key].localeCompare(a[key]);
-    } else {
-      return b[key] - a[key];
-    }
-  });
-}
-
-export function sortAz(arr) {
-  return (arr = [...arr].sort((a, b) => {
-    return a.localeCompare(b);
-  }));
-}
-
-export function removeAllWhitespaces(str) {
-  return str.replace(/\s+/g, "");
-}
-
-export function lowercaseFirstChar(str) {
-  if (str.length === 0) return str;
-  return str.charAt(0).toLowerCase() + str.slice(1);
-}
-
-export function inSensitive(str) {
-  return removeAllWhitespaces(lowercaseFirstChar(str));
-}
-
-export function isValidImage(url) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = url;
-  });
-}
-
 export function formatMinutes(minutes) {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
@@ -159,47 +104,6 @@ export function formatDate(date) {
 
 export function redirect(path) {
   window.location.href = path;
-}
-
-export function calculateMatchScore(primaryTitle, originalTitle, searchString) {
-  const combinedTitle = `${primaryTitle} ${originalTitle}`.toLowerCase();
-  const lowerSearch = searchString.toLowerCase();
-
-  let score = 0;
-
-  if (primaryTitle.toLowerCase() === lowerSearch) {
-    score += 10;
-  }
-
-  if (originalTitle.toLowerCase() === lowerSearch) {
-    score += 10;
-  }
-
-  if (combinedTitle === lowerSearch) {
-    score += 9;
-  }
-
-  if (combinedTitle.includes(lowerSearch)) {
-    score += 5;
-  }
-
-  const searchWords = lowerSearch.split(" ");
-  for (let word of searchWords) {
-    if (combinedTitle.includes(word)) {
-      score += 1;
-    }
-  }
-
-  return score;
-}
-
-export function sortByTitleMatch(arr, searchString) {
-  return arr.sort((a, b) => {
-    const scoreA = calculateMatchScore(a.primaryTitle, a.originalTitle, searchString);
-    const scoreB = calculateMatchScore(b.primaryTitle, b.originalTitle, searchString);
-
-    return scoreB - scoreA;
-  });
 }
 
 export function filterUniqueTitles(arr) {

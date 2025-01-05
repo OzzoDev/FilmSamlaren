@@ -19,9 +19,3 @@ export function useInputEvent(element, callback) {
     callback();
   });
 }
-
-export function useScrollEvent(element, callback) {
-  element.addEventListener("scroll", () => {
-    callback();
-  });
-}

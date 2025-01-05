@@ -1,10 +1,10 @@
 /*Javascript for watchlist page only*/
+import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
+import { TMDB_KEY } from "./utilities/apiKey.js";
 import { load, save } from "./utilities/utility.js";
 import { WATCHLIST_LSK } from "./utilities/key.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { iconBtn } from "./utilities/render.js";
-import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
-import { TMDB_KEY } from "./utilities/apiKey.js";
 
 const main = document.body.getElementsByTagName("main")[0];
 const watchlistEl = document.getElementById("watchlist");

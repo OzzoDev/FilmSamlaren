@@ -1,5 +1,4 @@
 /*Common render function for all pages*/
-import { formatLargeNumber } from "./utility.js";
 import { useClickEvent } from "./events.js";
 
 export function renderSpinner(parent) {
@@ -60,13 +59,13 @@ export function iconValue(value, src, altAndTitle, dir) {
   const iconText = document.createElement("p");
 
   iconContainer.setAttribute("class", "iconContainer");
-  iconContainer.setAttribute("title", formatLargeNumber(altAndTitle));
+  iconContainer.setAttribute("title", altAndTitle);
 
   icon.setAttribute("src", fullSrc);
-  icon.setAttribute("alt", formatLargeNumber(altAndTitle));
+  icon.setAttribute("alt", altAndTitle);
   icon.setAttribute("class", "icon");
 
-  iconText.innerText = formatLargeNumber(value);
+  iconText.innerText = value;
 
   if (!dir || dir.toLowerCase() === "left") {
     iconContainer.appendChild(icon);
@@ -101,12 +100,6 @@ export function setInnerText(element, text, classes) {
   element.innerText = text;
 }
 
-export function setIcon(icon, src, altTitle) {
-  icon.setAttribute("src", `../../res/icons/${src}.svg`);
-  icon.setAttribute("alt", altTitle);
-  icon.setAttribute("title", altTitle);
-}
-
 export function populateUl(parent, data, itemClass) {
   data.forEach((item) => {
     const li = document.createElement("li");
@@ -114,64 +107,6 @@ export function populateUl(parent, data, itemClass) {
     li.innerText = item;
     parent.appendChild(li);
   });
-}
-
-export function ulWithHeader(data, headerText, containerClass, headerClass, listClass, itemClass) {
-  const container = document.createElement("div");
-  const header = document.createElement("h2");
-  const ul = document.createElement("ul");
-
-  container.setAttribute("class", containerClass);
-  header.setAttribute("class", headerClass);
-  ul.setAttribute("class", listClass);
-
-  header.innerText = headerText;
-
-  data.forEach((item) => {
-    const li = document.createElement("li");
-    li.setAttribute("class", itemClass);
-    li.innerText = item;
-    ul.appendChild(li);
-  });
-
-  container.append(header, ul);
-
-  return container;
-}
-
-export function valueWithHeader(value, headerText, containerClass, headerClass, valueClass) {
-  const container = document.createElement("div");
-  const header = document.createElement("h2");
-  const text = document.createElement("p");
-
-  container.setAttribute("class", containerClass);
-  header.setAttribute("class", headerClass);
-  text.setAttribute("class", valueClass);
-
-  header.innerText = headerText;
-  text.innerText = value;
-
-  container.append(header, text);
-
-  return container;
-}
-
-export function iconLink(url, src, altTitle, className) {
-  const link = document.createElement("a");
-  const icon = document.createElement("img");
-
-  link.setAttribute("class", className);
-  link.setAttribute("title", altTitle);
-  link.setAttribute("href", url);
-  link.setAttribute("target", "_blank");
-
-  icon.setAttribute("src", `../../res/icons/${src}.svg`);
-  icon.setAttribute("class", "icon icon-scale");
-  icon.setAttribute("alt", altTitle);
-
-  link.appendChild(icon);
-
-  return link;
 }
 
 export function dataListAsBtns(dataList, containerClassName, btnClassName, callback) {

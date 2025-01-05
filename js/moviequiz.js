@@ -1,8 +1,8 @@
 /*Javascript for moviequiz page only*/
 import { ApiClientTmdb } from "./classes/ApiClientTmdb.js";
-import { dataListAsBtns, renderSpinner } from "./utilities/render.js";
 import { CLAUDE_KEY, TMDB_KEY } from "./utilities/apiKey.js";
 import { CLAUDE_URL } from "./utilities/endpoints.js";
+import { dataListAsBtns, renderSpinner } from "./utilities/render.js";
 import { useClickEvent } from "./utilities/events.js";
 import { MovieCard } from "./classes/MoiveCard.js";
 import { filterUniqueTitles } from "./utilities/utility.js";

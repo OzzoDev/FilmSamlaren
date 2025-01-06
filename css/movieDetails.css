@@ -10,6 +10,7 @@ main {
 
     .poster {
       width: 100%;
+      object-fit: cover;
     }
 
     .movieData {
@@ -57,14 +58,14 @@ main {
 
       .desc {
         width: min(100%, 900px);
-        margin-top: 180px;
+        margin-top: 100px;
         font-size: 1.5rem;
         text-align: center;
         align-self: center;
       }
 
       .genres {
-        margin-top: 100px;
+        margin-top: 20px;
         padding: 20px;
         align-self: center;
         display: flex;
@@ -80,8 +81,24 @@ main {
       }
 
       .watchList {
-        margin-top: 200px;
+        margin: 80px 0;
         align-self: center;
+      }
+
+      .trailerContainer {
+        width: 100%;
+        height: 100%;
+        padding-bottom: 56.25%;
+        position: relative;
+        overflow: hidden;
+
+        .trailer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }

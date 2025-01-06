@@ -53,7 +53,7 @@ async function getAllMovies() {
 
 async function getMoviesByGenre(genre) {
   if (genre === "All") {
-    getAllMovies();
+    await getAllMovies();
   } else {
     const moviesDataByGenre = await apiClientGenres.getMoviesByGenre(genres.find((gen) => gen.name === genre).id);
     movies = moviesDataByGenre.results;

@@ -17,7 +17,7 @@ export class ApiClientClaude {
     let previousMovies = useCachedData(MOVIESUGGESTIONS_LSK) || [];
 
     if (params) {
-      prompt = `Suggest 10 movies that match these genres: ${params}. Only suggest movies with high ratings that are well known, with high revenue. Put a dollar symbol before each suggestion. It is okay if the movies don't perfectly align with the requirements; just suggest 10 movies as close as possible to the requirements. Only include the movie name in the response. Previous suggestions: ${previousMovies.join(", ")}. Request ID: ${randomSuffix}`;
+      prompt = `Suggest 10 movies that match these genres: ${params}. Only suggest movies with high ratings that are well known, with high revenue. Put a dollar symbol before each suggestion. It is okay if the movies don't perfectly align with the requirements; just suggest 10 movies as close as possible to the requirements. Only include the movie name in the response.`;
     } else {
       prompt = `Suggest a fresh set of totally random movies, ensuring no repeats from previous responses. Only suggest movies with high ratings that are well known, with high revenue. Put a dollar symbol before each suggestion. It is okay if the movies don't perfectly align with the requirements; just suggest 10 movies as close as possible to the requirements. Only include the movie name in the response. Previous suggestions: ${previousMovies.join(", ")}. Request ID: ${randomSuffix}`;
     }

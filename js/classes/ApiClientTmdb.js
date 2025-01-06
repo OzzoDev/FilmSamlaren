@@ -45,6 +45,28 @@ export class ApiClientTmdb {
     return Promise.resolve(movies);
   }
 
+  async getMovieTrailer(id) {
+    const key = `movieTrailer${id}`;
+    const loadedData = useCachedData(key);
+    const src = "https://www.youtube.com/embed/";
+
+    if (loadedData) {
+      return `${src}${loadedData}?rel=0`;
+    }
+
+    const params = `movie/${id}/videos?api_key=${TMDB_KEY}`;
+    const trailerData = await this.fetchData(true, params);
+
+    const trailer = trailerData.results.find((video) => video.site === "YouTube" && video.type === "Trailer");
+
+    if (trailer) {
+      cacheData(trailer.key, trailer, BASE_TTL);
+      return `${src}${trailer.key}?rel=0`;
+    } else {
+      return "";
+    }
+  }
+
   async fetchData(cache, params) {
     const actionContainer = this.actionContainer;
     const key = this.key;

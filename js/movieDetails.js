@@ -7,10 +7,10 @@ import { iconValue, populateUl } from "./utilities/render.js";
 import { useClickEvent } from "./utilities/events.js";
 
 const movieDetailsEl = document.getElementById("movieDetails");
+const apiClient = new ApiClientTmdb(movieDetailsEl);
 
 let watchlist = load(WATCHLIST_LSK) || [];
 let isTracked;
-let movie;
 
 window.addEventListener("DOMContentLoaded", () => {
   init();
@@ -25,20 +25,23 @@ async function loadMovieDetails() {
 
   if (selectedMovie) {
     const params = `movie/${selectedMovie}?api_key=${TMDB_KEY}`;
-    movie = await new ApiClientTmdb(movieDetailsEl).cachedData(params);
+    const movie = await apiClient.cachedData(params);
+    const trailer = await apiClient.getMovieTrailer(selectedMovie);
+
     isTracked = watchlist.map((watch) => watch.id).includes(movie.id);
 
     console.log("Movies Details from tmdb: ", movie);
+    console.log("Movie trailer", trailer);
 
     if (!movie) {
       renderNoDetails(selectedMovie.title);
     } else {
-      renderMovieDetails();
+      renderMovieDetails(movie, trailer);
     }
   }
 }
 
-function renderMovieDetails() {
+function renderMovieDetails(movie, trailer) {
   movieDetailsEl.innerHTML = "";
 
   const id = movie.id;
@@ -68,6 +71,8 @@ function renderMovieDetails() {
   const genresEl = document.createElement("ul");
   const descEl = document.createElement("p");
   const watchListBtn = document.createElement("button");
+  const trailerContainerEl = document.createElement("div");
+  const trailerEl = document.createElement("iframe");
 
   posterEl.setAttribute("class", "poster");
   movieDataEl.setAttribute("class", "movieData");
@@ -83,10 +88,16 @@ function renderMovieDetails() {
   genresEl.setAttribute("class", "genres");
   descEl.setAttribute("class", "desc");
   watchListBtn.setAttribute("class", "watchList btn");
+  trailerContainerEl.setAttribute("class", "trailerContainer");
+  trailerEl.setAttribute("class", "trailer");
 
   posterEl.setAttribute("class", "poster");
   posterEl.setAttribute("src", posterSrc);
   posterEl.setAttribute("alt", title);
+
+  trailerEl.setAttribute("src", trailer);
+  trailerEl.setAttribute("frameborder", 0);
+  trailerEl.setAttribute("allowfullscreen", "true");
 
   titleEl.innerText = title;
   durationEl.innerText = duration;
@@ -117,7 +128,8 @@ function renderMovieDetails() {
   useClickEvent(watchListBtn, toggleMovieInWatchList);
 
   headingEl.append(titleEl, ratingIconEl);
-  movieDataEl.append(headingEl, durationEl, dateEl, popularityEl, votesEl, countryEl, languageEL, genresEl, descEl, watchListBtn);
+  trailerContainerEl.appendChild(trailerEl);
+  movieDataEl.append(headingEl, durationEl, dateEl, popularityEl, votesEl, countryEl, languageEL, genresEl, descEl, watchListBtn, trailerContainerEl);
   movieDetailsEl.append(posterEl, movieDataEl);
 }
 

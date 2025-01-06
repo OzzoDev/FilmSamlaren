@@ -8,7 +8,8 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 20px;
+
     .category {
       display: flex;
       flex-direction: column;
@@ -24,10 +25,5 @@ main {
 
   .movies {
     margin-top: 30px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
   }
 }

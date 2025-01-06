@@ -11,7 +11,7 @@ const themeContainer = document.getElementById("themes");
 const generateMoviesBtn = document.getElementById("generateMovies");
 const moiveContainer = document.getElementById("movies");
 
-const apiClientGenres = new ApiClientTmdb(genreContainer, "genres");
+const apiClientGenres = new ApiClientTmdb(moiveContainer, "genres");
 
 let genres = [];
 let movies = [];
@@ -77,13 +77,11 @@ function renderGenreBtns() {
   if (spinner) {
     spinner.remove();
   }
-
   const selectdGenre = (genre) => {
     if (!selectedCategories.genres.includes(genre)) {
       selectedCategories.genres.push(genre);
     }
   };
-
   genreContainer.appendChild(dataListAsBtns(genres, "genreBtns btn-container", "genreBtn btn", selectdGenre));
 }
 

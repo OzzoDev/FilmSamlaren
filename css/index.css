@@ -253,14 +253,7 @@ main {
   }
 }
 
-.movieCardContainer {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-template-rows: repeat(auto-fill, 540px);
-  justify-items: center;
-  align-items: start;
-  gap: 20px;
+.movieContainer {
   position: relative;
 }
 

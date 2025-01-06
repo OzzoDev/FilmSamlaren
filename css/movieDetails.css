@@ -113,6 +113,11 @@ footer {
     flex-direction: column;
   }
 
+  .poster {
+    object-fit: contain !important;
+    max-height: 100dvh;
+  }
+
   .movieHeader {
     flex-direction: column;
   }
@@ -123,5 +128,9 @@ footer {
 
   .movieStat {
     align-self: center;
+  }
+
+  .trailerContainer {
+    margin-bottom: 20px;
   }
 }

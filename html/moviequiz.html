@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Discover your next movie today" />
+    <title>FilmSamlaren</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="../css/normalize.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/spinner.css" />
+    <link rel="stylesheet" href="../css/moviequiz.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="../js/script.js" defer></script>
+    <script type="module" src="../js/moviequiz.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <a href="../html/index.html" title="Start page">
+        <img src="../res/images/logo.png" alt="Film Flicker Logo" class="logo" />
+      </a>
+      <nav>
+        <ul id="navUl" class="navUl">
+          <li>
+            <a href="../html/watchlist.html" title="Watchlist">
+              <img src="../res/icons/watchlist.svg" alt="Watchlist Icon" class="icon icon-scale" />
+              <p>Watchlist</p>
+            </a>
+          </li>
+          <li>
+            <a href="../html/moviequiz.html" title="Movie Quiz">
+              <img src="../res/icons/quiz.svg" alt="Quiz Icon" class="icon icon-scale" />
+              <p>Movie Quiz</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div id="menuToggle" class="icon nav-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </header>
+    <main>
+      <section id="movieQuiz" class="movieQuiz">
+        <div id="genres" class="genres category">
+          <h2 id="genreHeader" class="genreHeader categoryHeader">Selected genres</h2>
+        </div>
+        <div id="seasons" class="seasons category">
+          <h2 id="seasonHeader" class="seasonHeader categoryHeader">Selected season</h2>
+        </div>
+        <div id="themes" class="themes category">
+          <h2 id="themesHeader" class="themesHeader categoryHeader">Select themes</h2>
+        </div>
+      </section>
+      <button id="generateMovies" class="generateMovies btn">Generate</button>
+      <div id="movies" class="movies"></div>
+    </main>
+    <footer>
+      <p id="copyright" class="copyright">&copy;2025</p>
+      <section id="socials" class="socials">
+        <a href="#"><img class="social" src="../res/icons/instagram.svg" alt="Visit Film Nest's Instagram" title="Vist Film Nest's Instagram" /></a>
+        <a href="#"><img class="social" src="../res/icons/facebook.svg" alt="Visit Film Nest's Facebook" title="Vist Film Nest's Facebook" /></a>
+        <a href="#"><img class="social" src="../res/icons/twitter.svg" alt="Visit Film Nest's Twitter" title="Vist Film Nest's Twitter" /></a>
+      </section>
+    </footer>
+  </body>
+</html>

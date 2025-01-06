@@ -20,7 +20,10 @@ export class ApiClientTmdb {
 
     const params = `genre/movie/list?api_key=${TMDB_KEY}&language=en-US`;
     const genres = await this.fetchData(false, params);
-    cacheData(key, genres, BASE_TTL);
+
+    if (genres && genres.length > 0) {
+      cacheData(key, genres, BASE_TTL);
+    }
 
     return Promise.resolve(genres);
   }

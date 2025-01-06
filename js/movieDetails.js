@@ -28,10 +28,7 @@ async function loadMovieDetails() {
     const movie = await apiClient.cachedData(params);
     const trailer = await apiClient.getMovieTrailer(selectedMovie);
 
-    isTracked = watchlist.map((watch) => watch.id).includes(movie.id);
-
-    console.log("Movies Details from tmdb: ", movie);
-    console.log("Movie trailer", trailer);
+    isTracked = [...watchlist].map((watch) => watch.id).includes(movie.id);
 
     if (!movie) {
       renderNoDetails(selectedMovie.title);
@@ -95,6 +92,7 @@ function renderMovieDetails(movie, trailer) {
   posterEl.setAttribute("src", posterSrc);
   posterEl.setAttribute("alt", title);
 
+  trailerEl.setAttribute("title", "Trailer");
   trailerEl.setAttribute("src", trailer);
   trailerEl.setAttribute("frameborder", 0);
   trailerEl.setAttribute("allowfullscreen", "true");

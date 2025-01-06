@@ -255,6 +255,7 @@ main {
 
 .movieContainer {
   position: relative;
+  min-height: 500px;
 }
 
 @keyframes fadeIn {
